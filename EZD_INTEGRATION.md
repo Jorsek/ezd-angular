@@ -32,20 +32,49 @@ In **production**:
 
 No Java code changes required. Replace the inline Angular build step in the ezd CI workflows with a download from an ezd-angular release.
 
-### 1. Pin the version in ezd
+### How Releases Work
 
-Create a file `.ezd-angular-version` in the ezd repo root:
+Every merge to `main` in ezd-angular automatically creates:
 
-```
-0.1.0
-```
+1. **A dated release** (e.g., `v2025-02-09-1`, `v2025-02-09-2`) — permanent, immutable
+2. **A `latest` release** — always points to the most recent build on main
 
-### 2. Update the ezd build workflows
+You can also create manual releases by pushing a tag (`git tag v1.0.0 && git push --tags`).
 
-Replace the `ccms-components/build.sh` step in `build_release.yml` and `build_qa_installers.yml`:
+### Integration Branch (always use latest)
+
+On the ezd integration/development branch, always pull the latest Angular build:
 
 ```yaml
-- name: Download ezd-angular release
+- name: Download latest ezd-angular
+  env:
+    GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  run: |
+    gh release download latest \
+      --repo Jorsek/ezd-angular \
+      --pattern 'ezd-angular-latest.tar.gz' \
+      --dir /tmp
+    mkdir -p app-server/server/webapps/ezd-nxtgen/ccms-components
+    tar -xzf /tmp/ezd-angular-latest.tar.gz \
+      -C app-server/server/webapps/ezd-nxtgen/ccms-components
+```
+
+This ensures the integration branch always builds with the newest Angular components.
+
+### Release Branch (pin a specific version)
+
+For release branches, pin to a known-good version using `.ezd-angular-version`:
+
+1. Create `.ezd-angular-version` in the ezd repo root:
+
+```
+2025-02-09-1
+```
+
+2. Use this workflow step:
+
+```yaml
+- name: Download pinned ezd-angular
   env:
     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   run: |
@@ -61,24 +90,29 @@ Replace the `ccms-components/build.sh` step in `build_release.yml` and `build_qa
 
 The rest of the ezd build (Maven package, installer creation) stays the same — it just picks up the pre-built files from that directory.
 
-### 3. Updating the Angular version
-
-To bump the Angular version used by ezd:
-
-1. Create a new release in ezd-angular (`git tag v0.2.0 && git push --tags`)
-2. Update `.ezd-angular-version` in ezd to `0.2.0`
-3. Open a PR in ezd — CI will download and build with the new version
-
-### 4. Release branch workflow (optional)
-
-For more control, use a dedicated branch pattern in ezd:
+### Typical Workflow
 
 ```
-release/angular-v1.0  →  .ezd-angular-version contains "1.0.0"
-release/angular-v1.1  →  .ezd-angular-version contains "1.1.0"
+ezd-angular main ──▸ auto-releases: v2025-02-09-1, v2025-02-09-2, v2025-02-10-1, ...
+                       └── "latest" always points to newest
+
+ezd integration branch ──▸ downloads "latest" on every build
+ezd release branch     ──▸ .ezd-angular-version = "2025-02-09-2" (pinned)
 ```
 
-Merging these branches into the main ezd branch bumps the Angular dependency in a trackable, reviewable way.
+1. Develop Angular components, merge PRs to ezd-angular main
+2. Integration branch in ezd automatically picks up every new build
+3. When ready to cut a release, note the current version (e.g., `v2025-02-10-1`)
+4. Set `.ezd-angular-version` to `2025-02-10-1` on the ezd release branch
+5. That version is locked for the release — no surprises from newer Angular changes
+
+### Bumping the Pinned Version
+
+To update the Angular version on a release branch:
+
+1. Check available releases: `gh release list --repo Jorsek/ezd-angular`
+2. Update `.ezd-angular-version` to the desired version
+3. Open a PR in ezd — CI will download and build with that version
 
 ## Development Mode
 
