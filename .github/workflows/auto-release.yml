@@ -6,6 +6,8 @@ on:
 
 permissions:
   contents: write
+  models: read
+  pull-requests: read
 
 jobs:
   release:
@@ -55,18 +57,117 @@ jobs:
           find dist -type f -name '*.js' -o -name '*.mjs' -o -name '*.css' | head -20 >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
 
+      - name: Generate AI release summary
+        id: ai-summary
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Find the previous release tag
+          PREV_TAG=$(git describe --tags --abbrev=0 HEAD~1 2>/dev/null || echo "")
+
+          # Collect merged PR info since last release
+          if [ -n "$PREV_TAG" ]; then
+            echo "Collecting PRs since $PREV_TAG..."
+            COMMITS=$(git log --oneline "$PREV_TAG"..HEAD 2>/dev/null || echo "")
+          else
+            echo "No previous tag, collecting recent PRs..."
+            COMMITS=$(git log --oneline -20 2>/dev/null || echo "")
+          fi
+
+          # Get merged PRs associated with these commits
+          PR_DATA=$(gh pr list --state merged --base main --limit 20 \
+            --json number,title,body \
+            --jq '.[] | "PR #\(.number): \(.title)\n\(.body // "No description")\n---"' 2>/dev/null || echo "")
+
+          if [ -z "$PR_DATA" ]; then
+            PR_DATA="Commits since last release:\n$COMMITS"
+          fi
+
+          # Write PR data to a temp file to avoid shell escaping issues
+          echo "$PR_DATA" > /tmp/pr-data.txt
+
+          # Call GitHub Models API to generate summary
+          RESPONSE=$(node -e "
+            const fs = require('fs');
+            const prData = fs.readFileSync('/tmp/pr-data.txt', 'utf8');
+
+            const payload = {
+              model: 'openai/gpt-4o-mini',
+              messages: [{
+                role: 'user',
+                content: 'You are writing release notes for an Angular component library called ezd-angular. Summarize the following merged pull requests into a concise, well-formatted changelog. Use markdown with bullet points grouped by category (Features, Fixes, Improvements, CI/Infra). Keep it brief — 2-5 bullet points total. Do not include PR numbers.\n\nMerged PRs:\n' + prData
+              }],
+              max_tokens: 500
+            };
+
+            fetch('https://models.inference.ai.azure.com/chat/completions', {
+              method: 'POST',
+              headers: {
+                'Authorization': 'Bearer ' + process.env.GH_TOKEN,
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(payload)
+            })
+            .then(r => r.json())
+            .then(data => {
+              if (data.choices && data.choices[0]) {
+                console.log(data.choices[0].message.content);
+              } else {
+                console.error('No response from model:', JSON.stringify(data));
+                process.exit(1);
+              }
+            })
+            .catch(err => {
+              console.error('API call failed:', err.message);
+              process.exit(1);
+            });
+          " 2>/tmp/ai-error.txt)
+
+          if [ $? -eq 0 ] && [ -n "$RESPONSE" ]; then
+            echo "AI summary generated successfully"
+            # Save to file to preserve formatting
+            echo "$RESPONSE" > /tmp/ai-summary.txt
+            echo "has_summary=true" >> $GITHUB_OUTPUT
+          else
+            echo "AI summary failed, falling back to auto-generated notes"
+            cat /tmp/ai-error.txt 2>/dev/null || true
+            echo "has_summary=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Build release body
+        id: release-body
+        run: |
+          if [ "${{ steps.ai-summary.outputs.has_summary }}" == "true" ]; then
+            {
+              echo "## What's Changed"
+              echo ""
+              cat /tmp/ai-summary.txt
+              echo ""
+              echo "---"
+              echo "*Release notes generated with AI via GitHub Models*"
+            } > /tmp/release-body.txt
+          else
+            echo "Auto-release from main branch." > /tmp/release-body.txt
+          fi
+
       - name: Create dated release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ steps.version.outputs.tag }}
           name: ${{ steps.version.outputs.tag }}
           generate_release_notes: true
+          body_path: /tmp/release-body.txt
+          append_body: true
           files: ezd-angular-${{ steps.version.outputs.version }}.tar.gz
 
       - name: Update latest release
         run: |
           # Copy artifact with "latest" name
           cp ezd-angular-${{ steps.version.outputs.version }}.tar.gz ezd-angular-latest.tar.gz
+
+          # Read the release body
+          BODY=$(cat /tmp/release-body.txt 2>/dev/null || echo "Latest build from main")
 
           # Delete existing latest release if it exists
           gh release delete latest --yes 2>/dev/null || true
@@ -75,7 +176,9 @@ jobs:
           # Create new latest release pointing to same commit
           gh release create latest \
             --title "latest" \
-            --notes "Latest build from main (currently ${{ steps.version.outputs.tag }})" \
+            --notes "Latest build from main (currently ${{ steps.version.outputs.tag }})
+
+          $BODY" \
             --target ${{ github.sha }} \
             ezd-angular-latest.tar.gz
         env:
