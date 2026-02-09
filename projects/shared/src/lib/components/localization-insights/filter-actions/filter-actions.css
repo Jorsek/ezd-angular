@@ -1,0 +1,72 @@
+:host {
+  display: inline-flex;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
+}
+
+.filter-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Base button styles */
+.filter-actions__clear,
+.filter-actions__apply {
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  border-radius: 6px;
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    opacity 0.15s ease;
+}
+
+/* Clear button - secondary style */
+.filter-actions__clear {
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  color: #333;
+}
+
+.filter-actions__clear:hover:not(:disabled) {
+  background-color: #f5f5f5;
+  border-color: #d0d0d0;
+}
+
+.filter-actions__clear:focus {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
+.filter-actions__clear:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Apply button - primary style */
+.filter-actions__apply {
+  background-color: #2563eb;
+  border: 1px solid #2563eb;
+  color: #fff;
+}
+
+.filter-actions__apply:hover {
+  background-color: #1d4ed8;
+  border-color: #1d4ed8;
+}
+
+.filter-actions__apply:focus {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
+.filter-actions__apply:active {
+  background-color: #1e40af;
+  border-color: #1e40af;
+}

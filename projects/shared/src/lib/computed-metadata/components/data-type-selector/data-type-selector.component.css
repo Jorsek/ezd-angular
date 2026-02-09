@@ -1,0 +1,42 @@
+:host {
+  display: block;
+  font-family:
+    system-ui,
+    -apple-system,
+    sans-serif;
+}
+
+.data-type-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.data-type-btn {
+  padding: 10px 16px;
+  border: 1px solid var(--border-color, #ccc);
+  border-radius: 4px;
+  background: var(--btn-bg, #fff);
+  color: var(--text-primary, #333);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  min-height: 44px;
+}
+
+.data-type-btn:hover:not(.selected) {
+  border-color: var(--info-color, #0066cc);
+  background: var(--info-bg, #e3f2fd);
+}
+
+.data-type-btn:focus-visible {
+  outline: 2px solid var(--focus-color, #0066cc);
+  outline-offset: 1px;
+}
+
+.data-type-btn.selected {
+  border-color: var(--primary-color, #0066cc);
+  background: var(--primary-color, #0066cc);
+  color: #fff;
+}

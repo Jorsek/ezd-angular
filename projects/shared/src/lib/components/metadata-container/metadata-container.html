@@ -1,0 +1,62 @@
+<div class="metadata-container">
+  <div class="tab-bar" role="tablist" aria-label="Metadata tabs">
+    <button
+      type="button"
+      role="tab"
+      [attr.aria-selected]="activeTab() === 'metadata-configuration'"
+      [attr.aria-controls]="'panel-metadata-configuration'"
+      [class.active]="activeTab() === 'metadata-configuration'"
+      [disabled]="!bridgeAvailable()"
+      [attr.title]="bridgeAvailable() ? null : 'Metadata Configuration is not available'"
+      (click)="onTabChange('metadata-configuration')"
+      (keydown.enter)="onTabChange('metadata-configuration')"
+      (keydown.space)="onTabChange('metadata-configuration'); $event.preventDefault()"
+    >
+      Metadata Configuration
+    </button>
+    @if (extractedMetadataEnabled()) {
+      <button
+        type="button"
+        role="tab"
+        [attr.aria-selected]="activeTab() === 'computed-metadata'"
+        [attr.aria-controls]="'panel-computed-metadata'"
+        [class.active]="activeTab() === 'computed-metadata'"
+        (click)="onTabChange('computed-metadata')"
+        (keydown.enter)="onTabChange('computed-metadata')"
+        (keydown.space)="onTabChange('computed-metadata'); $event.preventDefault()"
+      >
+        Extracted Metadata
+      </button>
+    }
+  </div>
+
+  <div class="tab-content">
+    @if (extractedMetadataEnabled() && activeTab() === 'computed-metadata') {
+      <div
+        id="panel-computed-metadata"
+        role="tabpanel"
+        aria-labelledby="tab-computed-metadata"
+        class="tab-panel"
+      >
+        <ccms-computed-metadata />
+      </div>
+    }
+
+    <!-- GWT container - always rendered but hidden when not active -->
+    <div
+      #gwtContainer
+      id="panel-metadata-configuration"
+      role="tabpanel"
+      aria-labelledby="tab-metadata-configuration"
+      class="tab-panel gwt-panel"
+      [class.hidden]="activeTab() !== 'metadata-configuration'"
+    >
+      @if (!bridgeAvailable()) {
+        <div class="bridge-unavailable">
+          <p>Metadata Configuration is not available.</p>
+          <p>Please refresh the page to try again.</p>
+        </div>
+      }
+    </div>
+  </div>
+</div>

@@ -1,0 +1,106 @@
+@font-face {
+  font-family: 'easyDITA-Font';
+  src:
+    url('/assets/fonts/easyDITA-Font.woff') format('woff'),
+    url('/assets/fonts/easyDITA-Font.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+/* Base host styles */
+:host {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: default;
+}
+
+/* Clickable state */
+:host(.resource-chip--clickable) {
+  cursor: pointer;
+}
+
+/* Full mode layout */
+:host(.resource-chip--full) {
+  align-items: flex-start;
+}
+
+/* Link styles */
+.resource-chip__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  color: inherit;
+}
+
+:host(.resource-chip--full) .resource-chip__link {
+  align-items: flex-start;
+}
+
+.resource-chip__link:hover {
+  text-decoration: underline;
+}
+
+/* Icon styles */
+i {
+  font-family: 'easyDITA-Font' !important;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 16px;
+  line-height: 1;
+  flex-shrink: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+:host(.resource-chip--full) i {
+  width: 20px;
+  text-align: center;
+  margin-top: 2px;
+}
+
+i.ji-Topic::before {
+  content: '\ea55';
+  color: #2792f3;
+}
+
+i.ji-Map::before {
+  content: '\e9b5';
+  color: #47cc4c;
+}
+
+i.ji-File::before {
+  content: '\e9a8';
+  color: #6b7280;
+}
+
+/* Text container for full mode */
+.resource-chip__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+/* Title (full mode only) */
+.resource-chip__title {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #111827;
+}
+
+/* Filename */
+.resource-chip__filename {
+  font-size: 14px;
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+:host(.resource-chip--full) .resource-chip__filename {
+  font-size: 13px;
+  color: #6b7280;
+}

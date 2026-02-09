@@ -1,0 +1,117 @@
+<div class="find-replace-container">
+  <div class="find-replace-content">
+    <!-- Header -->
+    <div class="header">
+      <h2>Find/Replace</h2>
+    </div>
+
+    <!-- Main Form Area -->
+    <div class="form-sections">
+      <!-- Scope Section (Left) -->
+      <ccms-search-scope-selector
+        [(contextType)]="contextType"
+        [(resourceUuid)]="resourceUuid"
+        [(directoryUuid)]="directoryUuid"
+        [(recursive)]="recursive"
+        [(explicitOnly)]="explicitOnly"
+        [disabled]="isSearching()"
+      />
+
+      <!-- Find Section (Right) -->
+      <ccms-find-criteria-form
+        [(pattern)]="searchPattern"
+        [(useRegex)]="useRegex"
+        [(caseSensitive)]="caseSensitive"
+        [(wholeWordsOnly)]="wholeWordsOnly"
+        [(ignoreWhitespace)]="ignoreWhitespace"
+        [(contentTypes)]="contentTypes"
+        [(xpathRestriction)]="xpathRestriction"
+        [disabled]="isSearching()"
+      />
+    </div>
+
+    <!-- Replace Section (Disabled) -->
+    <section class="replace-section" [class.disabled]="!replaceEnabled()">
+      <h3>Replace <span class="coming-soon">(Coming soon)</span></h3>
+
+      <div class="form-field">
+        <label for="replace-text">Replace with:</label>
+        <input
+          id="replace-text"
+          type="text"
+          [value]="replaceText()"
+          disabled
+          title="Replace functionality will be available in a future update"
+        />
+      </div>
+    </section>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+      <button
+        type="button"
+        (click)="replaceAll()"
+        class="secondary-button"
+        disabled
+        title="Replace functionality coming soon"
+      >
+        Replace All
+      </button>
+
+      <button
+        type="button"
+        (click)="downloadCsv()"
+        class="secondary-button"
+        [disabled]="!isFormValid() || isSearching() || isDownloadingCsv()"
+      >
+        {{ isDownloadingCsv() ? 'Downloading...' : 'Download as CSV' }}
+      </button>
+
+      <button
+        type="button"
+        (click)="executeFindAll()"
+        class="primary-button"
+        [disabled]="!isFormValid() || isSearching()"
+      >
+        Find All
+      </button>
+    </div>
+
+    <!-- Error Message -->
+    @if (errorMessage()) {
+      <div class="error-banner" role="alert">
+        <strong>Error:</strong> {{ errorMessage() }}
+        @if (thresholdExceeded()) {
+          <button type="button" (click)="downloadCsv()" class="download-csv-button">
+            Download Complete Results as CSV
+          </button>
+        }
+      </div>
+    }
+
+    <!-- Progress Section -->
+    @if (isSearching()) {
+      <ccms-search-progress
+        [resourcesProcessed]="resourcesProcessed()"
+        [totalResources]="totalResources()"
+        [matchesFound]="totalMatches()"
+        (stopSearch)="stopSearch()"
+      />
+    }
+
+    <!-- Results Section -->
+    @if (fileMatchesList().length > 0) {
+      <ccms-search-results
+        [fileMatches]="fileMatchesList()"
+        [expandedFiles]="expandedFiles()"
+        [totalMatches]="totalMatches()"
+        [resourcesWithMatches]="resourcesWithMatches()"
+        [totalResources]="totalResources()"
+        [durationMs]="durationMs()"
+        (toggleFileExpansion)="onToggleFileExpansion($event)"
+        (expandAll)="onExpandAll()"
+        (collapseAll)="onCollapseAll()"
+      />
+    }
+  </div>
+</div>

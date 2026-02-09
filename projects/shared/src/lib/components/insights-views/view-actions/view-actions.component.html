@@ -1,0 +1,20 @@
+<div class="ccms-view-actions">
+  @if (loading()) {
+    <div class="ccms-view-actions__skeleton"></div>
+  } @else {
+    @if (hasView() && dirty() && editable()) {
+      <button
+        type="button"
+        class="ccms-view-actions__button ccms-view-actions__button--primary"
+        (click)="onUpdateView()"
+      >
+        Save Changes
+      </button>
+    }
+    @if (showCreateButton()) {
+      <button type="button" class="ccms-view-actions__button" (click)="onCreateView()">
+        Save as new View
+      </button>
+    }
+  }
+</div>

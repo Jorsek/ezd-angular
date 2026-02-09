@@ -1,0 +1,52 @@
+<!-- Loading overlay - always rendered, visibility controlled by CSS -->
+<div
+  class="ccms-report__loading-overlay"
+  [class.ccms-report__loading-overlay--visible]="isLoading()"
+  [class.ccms-report__loading-overlay--hidden]="!isLoading()"
+>
+  <div class="ccms-report__loading-content">
+    <img src="/ezdnxtgen/Heretto-H.svg" class="ccms-report__loading-logo" alt="Loading" />
+    <p class="ccms-report__loading-message">{{ loadingMessage() }}</p>
+  </div>
+</div>
+
+<!-- Content - always rendered behind overlay -->
+<div class="ccms-report__content">
+  @if (hasHeader()) {
+    <header class="ccms-report__header">
+      @if (title()) {
+        <h2 class="ccms-report__title">{{ title() }}</h2>
+      }
+      @if (description()) {
+        <p class="ccms-report__description">{{ description() }}</p>
+      }
+    </header>
+  }
+  @if (hasErrors()) {
+    <div class="ccms-report__error">
+      <ccms-alert-banner
+        type="error"
+        message="Something went wrong loading the report."
+        [messages]="errorMessages()"
+        [showRetry]="true"
+        (retry)="onRetry()"
+      />
+    </div>
+  }
+  @if (hasViewManagement() && currentViewService()!.viewReady()) {
+    <ccms-view-section
+      [views]="allViews()"
+      [insightType]="insightType()!"
+      [allowUserViews]="allowUserViews()"
+      (viewChange)="onViewChange($event)"
+      (saveView)="onSaveView($event)"
+      (updateView)="onUpdateView($event)"
+      (deleteView)="onDeleteView($event)"
+    />
+  }
+  <div class="ccms-report__body">
+    <ng-content />
+  </div>
+</div>
+
+<ccms-popup-outlet />

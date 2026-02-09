@@ -1,0 +1,106 @@
+/* Container - fixed bottom-right */
+.ccms-notification-container {
+  position: fixed;
+  bottom: 16px;
+  right: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 1000;
+}
+
+/* Individual notification item */
+.ccms-notification {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 16px;
+  background-color: rgb(255, 255, 255);
+  color: rgb(23, 23, 23);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-left: 4px solid;
+  border-radius: 8px;
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  font-family: ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Success variant - green accent */
+.ccms-notification--success {
+  border-left-color: #22c55e;
+}
+
+.ccms-notification--success .ccms-notification__icon {
+  color: #22c55e;
+}
+
+/* Error variant - red accent */
+.ccms-notification--error {
+  border-left-color: #ef4444;
+}
+
+.ccms-notification--error .ccms-notification__icon {
+  color: #ef4444;
+}
+
+/* Icon sizing */
+.ccms-notification__icon {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.ccms-notification__icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Message text */
+.ccms-notification__message,
+.ccms-notification__text {
+  flex: 1;
+  font-size: 14px;
+}
+
+/* Retry button */
+.ccms-notification__retry {
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  background-color: #3b82f6;
+  color: white;
+  border: none;
+}
+
+.ccms-notification__retry:hover {
+  background-color: #2563eb;
+}
+
+/* Dismiss X button */
+.ccms-notification__dismiss {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  margin-left: auto;
+  background: rgb(250, 250, 250);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+  color: rgb(115, 115, 115);
+  cursor: pointer;
+  flex-shrink: 0;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.ccms-notification__dismiss:hover {
+  background-color: rgb(240, 240, 240);
+  color: rgb(23, 23, 23);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.ccms-notification__dismiss svg {
+  width: 18px;
+  height: 18px;
+}

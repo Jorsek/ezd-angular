@@ -1,0 +1,78 @@
+<div class="filter-section">
+  <div class="filter-section__filters">
+    @if (showSearchFilter()) {
+      <ccms-search-filter
+        [value]="searchValue()"
+        [searchFields]="searchFields()"
+        (searchChanged)="onSearchChange($event)"
+      />
+    }
+    @for (filter of displayFilters(); track filter.category.id) {
+      @switch (filter.category.type) {
+        @case ('text') {
+          <ccms-text-filter
+            [label]="filter.category.label"
+            [value]="getFirstValue(filter.selectedValues)"
+            [removable]="filter.category.removable"
+            (valueChange)="onTextValueChange(filter.category.id, $event)"
+            (removed)="onFilterRemoved(filter.category.id)"
+          />
+        }
+        @case ('taxonomy') {
+          <ccms-taxonomy-filter
+            [label]="filter.category.label"
+            [options]="filter.category.options!()"
+            [selectedValues]="filter.selectedValues"
+            [searchable]="filter.category.searchable"
+            [removable]="filter.category.removable"
+            (selectionChange)="onSelectionChange(filter.category.id, $event)"
+            (removed)="onFilterRemoved(filter.category.id)"
+          />
+        }
+        @case ('list') {
+          <ccms-list-filter
+            [label]="filter.category.label"
+            [options]="filter.category.options!()"
+            [selectedValues]="filter.selectedValues"
+            [selectionMode]="filter.category.selectionMode ?? 'multi'"
+            [searchable]="filter.category.searchable ?? false"
+            [removable]="filter.category.removable"
+            (selectionChange)="onSelectionChange(filter.category.id, $event)"
+            (removed)="onFilterRemoved(filter.category.id)"
+          />
+        }
+        @case ('number') {
+          <ccms-range-filter
+            [label]="filter.category.label"
+            [type]="'number'"
+            [range]="filter.range ?? {}"
+            [removable]="filter.category.removable"
+            (valueChange)="onRangeValueChange(filter.category.id, $event)"
+            (removed)="onFilterRemoved(filter.category.id)"
+          />
+        }
+        @case ('date') {
+          <ccms-range-filter
+            [label]="filter.category.label"
+            [type]="'date'"
+            [interval]="filter.interval ?? {}"
+            [removable]="filter.category.removable"
+            (valueChange)="onRangeValueChange(filter.category.id, $event)"
+            (removed)="onFilterRemoved(filter.category.id)"
+          />
+        }
+      }
+    }
+
+    @if (!hideAddFilterButton()) {
+      <ccms-add-filter-button
+        [availableFilters]="remainingFilters()"
+        (filterSelected)="onFilterAdded($event)"
+      />
+    }
+  </div>
+
+  <div class="filter-section__actions">
+    <ccms-filter-actions [hasFilters]="hasFilters()" (clearClick)="onClear()" />
+  </div>
+</div>

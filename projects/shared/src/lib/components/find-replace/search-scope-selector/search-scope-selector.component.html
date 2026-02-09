@@ -1,0 +1,75 @@
+<section class="scope-section">
+  <h3>Scope</h3>
+
+  <div class="form-field">
+    <label for="context-type">Find in:</label>
+    <select
+      id="context-type"
+      [value]="contextType()"
+      (change)="onContextTypeChange($event)"
+      [disabled]="disabled()"
+    >
+      <option value="SINGLE_RESOURCE">Single Resource</option>
+      <option value="RESOURCE_WITH_DEPENDENCIES">Resource with Dependencies</option>
+      <option value="DIRECTORY_SCOPE">Directory</option>
+    </select>
+  </div>
+
+  @if (contextType() === 'SINGLE_RESOURCE' || contextType() === 'RESOURCE_WITH_DEPENDENCIES') {
+    <div class="form-field">
+      <label for="resource-uuid">Resource UUID:</label>
+      <input
+        id="resource-uuid"
+        type="text"
+        [value]="resourceUuid()"
+        (input)="onResourceUuidInput($event)"
+        [disabled]="disabled()"
+        placeholder="Enter resource UUID"
+        [attr.aria-invalid]="!isContextValid()"
+      />
+      @if (!isContextValid()) {
+        <span class="error-message">Valid UUID required</span>
+      }
+    </div>
+  }
+
+  @if (contextType() === 'RESOURCE_WITH_DEPENDENCIES') {
+    <label class="checkbox-label">
+      <input
+        type="checkbox"
+        [checked]="explicitOnly()"
+        (change)="onExplicitOnlyChange($event)"
+        [disabled]="disabled()"
+      />
+      <span>Explicit dependencies only</span>
+    </label>
+  }
+
+  @if (contextType() === 'DIRECTORY_SCOPE') {
+    <div class="form-field">
+      <label for="directory-uuid">Directory UUID:</label>
+      <input
+        id="directory-uuid"
+        type="text"
+        [value]="directoryUuid()"
+        (input)="onDirectoryUuidInput($event)"
+        [disabled]="disabled()"
+        placeholder="Enter directory UUID"
+        [attr.aria-invalid]="!isContextValid()"
+      />
+      @if (!isContextValid()) {
+        <span class="error-message">Valid UUID required</span>
+      }
+    </div>
+
+    <label class="checkbox-label">
+      <input
+        type="checkbox"
+        [checked]="recursive()"
+        (change)="onRecursiveChange($event)"
+        [disabled]="disabled()"
+      />
+      <span>Recurse subdirectories</span>
+    </label>
+  }
+</section>

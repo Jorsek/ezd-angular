@@ -1,0 +1,278 @@
+:host {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.table-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.button-container {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.add-column-button,
+.download-csv-button {
+  background-color: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  height: 34px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.add-column-button {
+  padding: 8px 12px;
+  display: inline-flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.add-column-button svg,
+.download-csv-button svg {
+  height: 16px;
+  width: 16px;
+}
+
+.add-column-button:hover:not(:disabled),
+.download-csv-button:hover:not(:disabled) {
+  background-color: #f8f9fa;
+}
+
+.add-column-button:focus,
+.download-csv-button:focus {
+  outline: none;
+}
+
+.add-column-button:disabled,
+.download-csv-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.download-csv-button {
+  padding: 8px 12px;
+  display: inline-flex;
+  gap: 5px;
+  align-items: center;
+}
+
+/* Icon wrapper constrains the innerHTML SVG size */
+.download-csv-button__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+}
+
+/* ::ng-deep needed because SVG is injected via innerHTML */
+.download-csv-button__icon ::ng-deep svg {
+  width: 16px !important;
+  height: 16px !important;
+}
+
+.add-column-button.open {
+  background-color: #e9ecef;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.table-container {
+  overflow-y: scroll;
+  overflow-x: auto;
+  max-height: 40em;
+}
+
+.table {
+  min-width: 100%;
+  width: max-content;
+  background: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.table th {
+  text-align: left;
+  padding: 12px 16px;
+  height: 40px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  background-color: white;
+  white-space: nowrap;
+  box-sizing: border-box;
+  border-bottom: 1px solid #eee;
+}
+
+thead tr:first-child th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+thead tr:nth-child(2) th {
+  position: sticky;
+  top: 40px; /* height of first header row */
+  z-index: 1;
+}
+
+.column-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.column-sort-button {
+  background: transparent;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+.column-sort-button:focus {
+  outline: none;
+}
+
+.column-sort-button:hover .sort-indicator {
+  color: #444;
+}
+
+.sort-indicator {
+  font-size: 12px;
+  color: #999;
+  display: inline-block;
+  min-width: 12px;
+  text-align: center;
+  transition: color 0.1s ease;
+}
+
+.sort-indicator.asc,
+.sort-indicator.desc {
+  color: #333;
+}
+
+.sort-placeholder {
+  opacity: 0.3;
+}
+
+.remove-column-btn {
+  background: transparent;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  color: #666;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  padding: 2px 6px;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.remove-column-btn:hover {
+  background: #f44336;
+  border-color: #f44336;
+  color: white;
+}
+
+.remove-column-btn:focus {
+  outline: none;
+}
+
+.table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.table td.title {
+  min-width: 200px;
+  max-width: 300px;
+}
+
+.table td.fileName {
+  min-width: 200px;
+  max-width: 300px;
+}
+
+.table tr:hover {
+  background: #f5f5f5;
+}
+
+.text-center {
+  text-align: center;
+  padding: 40px 0;
+  color: #666;
+}
+
+/* Loading state - dim content while refreshing/sorting */
+tbody.loading {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid #f3f3f3;
+  border-top: 2px solid #333;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+table th input {
+  background-color: #f3f3f5;
+  outline: none;
+  border: none;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+}
+
+.show-on-hover {
+  opacity: 0;
+  transition: opacity 100ms ease-in;
+}
+
+tr:hover .show-on-hover {
+  opacity: 1;
+}
+
+.table-load-info {
+  font-size: 0.8rem;
+}
+
+.infinite-scroll-sentinel {
+  display: flex;
+  justify-content: center;
+  padding: 16px;
+  min-height: 20px;
+}
+
+/* Status badge styles are in reporting/cell-renderers/status-badges.css
+   and loaded globally via StatusCellComponent (ViewEncapsulation.None) */

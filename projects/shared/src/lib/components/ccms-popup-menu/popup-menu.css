@@ -1,0 +1,202 @@
+/* =============================================================================
+   Popup Menu Component Styles
+
+   Default visual styles with CSS custom properties for customization.
+   Set variables on the menu element or a parent to override defaults.
+
+   CSS Custom Properties (with defaults):
+   --------------------------------------
+   Menu container:
+     --popup-menu-z-index: 1000
+     --popup-menu-min-width: 160px
+     --popup-menu-max-width: 320px
+     --popup-menu-background: #fff
+     --popup-menu-border: 1px solid #dee2e6
+     --popup-menu-border-radius: 4px
+     --popup-menu-box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15)
+     --popup-menu-padding: 4px 0
+
+   Menu items:
+     --popup-menu-item-color: #333
+     --popup-menu-item-font-size: 14px
+     --popup-menu-item-padding: 10px 16px
+     --popup-menu-item-gap: 8px
+     --popup-menu-item-hover-background: #f8f9fa
+     --popup-menu-item-selected-background: #e3f2fd
+     --popup-menu-item-disabled-color: #9e9e9e
+     --popup-menu-focus-color: #1a73e8
+
+   Example dark theme:
+   ccms-popup-menu.dark {
+     --popup-menu-background: #2d2d2d;
+     --popup-menu-border: 1px solid #404040;
+     --popup-menu-item-color: #e0e0e0;
+     --popup-menu-item-hover-background: #404040;
+     --popup-menu-item-selected-background: #1a73e8;
+   }
+   ============================================================================= */
+
+/* -----------------------------------------------------------------------------
+   Menu (ccms-popup-menu) - Host element IS the panel
+   ----------------------------------------------------------------------------- */
+ccms-popup-menu {
+  display: contents;
+}
+
+ccms-popup-menu.open {
+  display: block;
+  position: fixed;
+  z-index: var(--popup-menu-z-index, 1000);
+  min-width: var(--popup-menu-min-width, 160px);
+  max-width: var(--popup-menu-max-width, 320px);
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  background: var(--popup-menu-background, #fff);
+  border: var(--popup-menu-border, 1px solid #dee2e6);
+  border-radius: var(--popup-menu-border-radius, 4px);
+  box-shadow: var(--popup-menu-box-shadow, 0 2px 8px rgba(0, 0, 0, 0.15));
+  padding: var(--popup-menu-padding, 4px 0);
+}
+
+/* Hide items when menu is closed */
+ccms-popup-menu ccms-popup-menu-item,
+ccms-popup-menu ccms-popup-submenu {
+  display: none;
+}
+
+ccms-popup-menu.open ccms-popup-menu-item,
+ccms-popup-menu.open ccms-popup-submenu {
+  display: flex;
+}
+
+/* -----------------------------------------------------------------------------
+   Menu Item (ccms-popup-menu-item)
+   ----------------------------------------------------------------------------- */
+ccms-popup-menu-item {
+  cursor: pointer;
+  color: var(--popup-menu-item-color, #333);
+  font-size: var(--popup-menu-item-font-size, 14px);
+  padding: var(--popup-menu-item-padding, 10px 16px);
+  align-items: center;
+  gap: var(--popup-menu-item-gap, 8px);
+  /* Truncate long text with ellipsis */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+ccms-popup-menu-item:hover {
+  background: var(--popup-menu-item-hover-background, #f8f9fa);
+}
+
+ccms-popup-menu-item:focus-visible {
+  outline: 2px solid var(--popup-menu-focus-color, #1a73e8);
+  outline-offset: -2px;
+}
+
+ccms-popup-menu-item.selected {
+  background: var(--popup-menu-item-selected-background, #e3f2fd);
+}
+
+ccms-popup-menu-item.disabled {
+  cursor: not-allowed;
+  color: var(--popup-menu-item-disabled-color, #9e9e9e);
+}
+
+ccms-popup-menu-item.disabled:hover {
+  background: transparent;
+}
+
+/* Checkbox indicator for multi-select mode */
+ccms-popup-menu-item.multi-select::before {
+  content: '';
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1em;
+  height: 1em;
+  flex-shrink: 0;
+  font-size: 1.2em;
+  font-weight: bold;
+  margin: 0;
+  padding: 0;
+}
+
+ccms-popup-menu-item.multi-select.selected::before {
+  content: '✓';
+}
+
+/* Indeterminate state (partial selection for hierarchical items) */
+ccms-popup-menu-item.multi-select.indeterminate::before {
+  content: '−';
+}
+
+ccms-popup-menu-item.multi-select.indeterminate {
+  opacity: 0.7;
+  background: var(--popup-menu-item-selected-background, #e3f2fd);
+}
+
+/* -----------------------------------------------------------------------------
+   Submenu (ccms-popup-submenu)
+   ----------------------------------------------------------------------------- */
+ccms-popup-submenu {
+  cursor: pointer;
+  position: relative;
+  color: var(--popup-menu-item-color, #333);
+  font-size: var(--popup-menu-item-font-size, 14px);
+  padding: var(--popup-menu-item-padding, 10px 16px);
+  align-items: center;
+  gap: var(--popup-menu-item-gap, 8px);
+}
+
+ccms-popup-submenu:hover {
+  background: var(--popup-menu-item-hover-background, #f8f9fa);
+}
+
+ccms-popup-submenu:focus-visible {
+  outline: 2px solid var(--popup-menu-focus-color, #1a73e8);
+  outline-offset: -2px;
+}
+
+ccms-popup-submenu.disabled {
+  cursor: not-allowed;
+  color: var(--popup-menu-item-disabled-color, #9e9e9e);
+}
+
+ccms-popup-submenu.disabled:hover {
+  background: transparent;
+}
+
+ccms-popup-submenu::after {
+  content: '';
+  display: block;
+  width: 0;
+  height: 0;
+  flex-shrink: 0;
+  margin-left: auto;
+  border: 5px solid transparent;
+  border-left-color: currentColor;
+  border-right-width: 0;
+}
+
+ccms-popup-submenu .submenu-panel {
+  position: fixed;
+  z-index: calc(var(--popup-menu-z-index, 1000) + 1);
+  min-width: var(--popup-menu-min-width, 160px);
+  max-width: var(--popup-menu-max-width, 320px);
+  overflow-y: auto;
+
+  /* Visual styles via CSS custom properties - set these on the parent menu */
+  background: var(--popup-menu-background, #fff);
+  border: var(--popup-menu-border, 1px solid #dee2e6);
+  border-radius: var(--popup-menu-border-radius, 4px);
+  box-shadow: var(--popup-menu-box-shadow, 0 2px 8px rgba(0, 0, 0, 0.15));
+  padding: var(--popup-menu-padding, 4px 0);
+}
+
+/* Show items inside submenu panel */
+ccms-popup-submenu .submenu-panel > ccms-popup-menu-item,
+ccms-popup-submenu .submenu-panel > ccms-popup-submenu {
+  display: flex;
+}

@@ -1,0 +1,25 @@
+<div class="results-section">
+  <div class="results-header">
+    <h3>Results: {{ totalMatches() }} matches in {{ resourcesWithMatches() }} files</h3>
+    <div class="results-actions">
+      <button type="button" (click)="onExpandAll()" class="text-button">Expand All</button>
+      <button type="button" (click)="onCollapseAll()" class="text-button">Collapse All</button>
+    </div>
+  </div>
+
+  @if (durationMs() > 0) {
+    <p class="search-duration">
+      Search completed in {{ formatDuration(durationMs()) }} - {{ totalResources() }} files searched
+    </p>
+  }
+
+  <div class="file-matches-list">
+    @for (fileMatch of fileMatches(); track fileMatch.resource.uuid) {
+      <ccms-file-match-group
+        [fileMatch]="fileMatch"
+        [expanded]="isFileExpanded(fileMatch.resource.uuid)"
+        (toggleExpand)="onToggleFileExpansion(fileMatch.resource.uuid)"
+      />
+    }
+  </div>
+</div>

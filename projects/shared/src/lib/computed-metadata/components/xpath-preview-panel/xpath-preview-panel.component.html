@@ -1,0 +1,92 @@
+<div class="preview-panel">
+  <div class="preview-header">
+    <h4 class="preview-title">XPath Preview</h4>
+  </div>
+
+  <div class="preview-folder">
+    <label class="resource-label">Select folder to preview:</label>
+    <ccms-folder-picker
+      [folderUuid]="folderUuid()"
+      [folderName]="folderName()"
+      [folderPath]="folderPath()"
+      buttonText="Browse"
+      placeholder="No folder selected"
+      (folderChange)="onFolderChange($event)"
+    />
+  </div>
+
+  <div class="preview-content">
+    @if (!canPreview()) {
+      <div class="empty-state">
+        <p>Enter XPath expressions and select a folder to see preview</p>
+      </div>
+    } @else if (isLoading()) {
+      <div class="loading-state">
+        <div class="spinner"></div>
+        @if (searchedCount() > 0) {
+          <p>
+            Searched {{ searchedCount() }} of {{ totalResources() }} files,
+            {{ results().length }} matches found
+          </p>
+        } @else if (totalResources() > 0) {
+          <p>Searching {{ totalResources() }} files...</p>
+        } @else {
+          <p>Loading preview...</p>
+        }
+      </div>
+    } @else if (error()) {
+      <div class="error-state">
+        <p>{{ error() }}</p>
+      </div>
+    } @else if (isEmpty()) {
+      <div class="empty-state">
+        @if (searchedCount() > 0) {
+          <p>Searched {{ searchedCount() }} files, 0 matches found</p>
+        } @else {
+          <p>No results found</p>
+        }
+      </div>
+    } @else {
+      <div class="results-header">
+        <div class="results-summary">
+          <strong>{{ returnedCount() }} matching resources found</strong>
+          <div class="results-detail">
+            @if (hasMore()) {
+              {{ totalResources() }} total files. Preview stops after 50 files
+            } @else {
+              {{ totalResources() }} total files
+            }
+          </div>
+        </div>
+      </div>
+      <div class="results-list">
+        @for (item of results(); track item.resource.resourceUuid) {
+          <div class="result-card">
+            <div class="result-header">
+              <ccms-resource-chip
+                [filename]="item.resource.fileName"
+                [ditaType]="item.resource.ditaType"
+                [ezdPath]="item.resource.ezdPath"
+                [resourceUuid]="item.resource.resourceUuid"
+              />
+            </div>
+            @for (match of item.matches; track $index) {
+              <div class="match-section">
+                <div class="matched-xpath">Matched: {{ match.matchedXpath }}</div>
+                <div class="values-list">
+                  @for (value of match.values; track $index) {
+                    <span class="value-chip">{{ value }}</span>
+                  } @empty {
+                    <div class="no-values">No values found</div>
+                  }
+                </div>
+              </div>
+            } @empty {
+              <div class="no-matches">No matches found</div>
+            }
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

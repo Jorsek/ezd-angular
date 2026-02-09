@@ -1,0 +1,116 @@
+<div class="preview-results">
+  <div class="preview-header">
+    <h3 class="preview-title">Preview Results</h3>
+    <button
+      type="button"
+      class="close-btn"
+      (click)="onClose()"
+      aria-label="Close preview"
+      title="Close"
+    >
+      &times;
+    </button>
+  </div>
+
+  @if (error()) {
+    <div class="error-message" role="alert">
+      {{ error() }}
+    </div>
+  }
+
+  @if (recomputeProgress(); as progress) {
+    <div class="progress-section">
+      <div class="progress-bar-container">
+        <div class="progress-bar" [style.width.%]="progressPercent()"></div>
+      </div>
+      <p class="progress-text">
+        @if (progress.type === 'complete') {
+          Completed: {{ progress.current }} items processed
+          @if (progress.failed && progress.failed > 0) {
+            <span class="failed-count">({{ progress.failed }} failed)</span>
+          }
+        } @else {
+          Processing: {{ progress.current }} / {{ progress.total }}
+        }
+      </p>
+    </div>
+  }
+
+  @if (isLoading() && items().length === 0) {
+    <div class="loading-state">
+      <p>Loading preview...</p>
+    </div>
+  } @else if (items().length === 0) {
+    <div class="empty-state">
+      <p>No results to display.</p>
+    </div>
+  } @else {
+    <div class="stats-bar">
+      <span class="stat">
+        <strong>{{ totalItems() }}</strong> items
+      </span>
+      <span class="stat">
+        <strong>{{ matchedCount() }}</strong> matched
+      </span>
+      <span class="stat">
+        <strong>{{ defaultCount() }}</strong> default
+      </span>
+      <span class="stat-divider"></span>
+      <span class="stat">
+        <strong>{{ topicCount() }}</strong> topics
+      </span>
+      <span class="stat">
+        <strong>{{ mapCount() }}</strong> maps
+      </span>
+    </div>
+
+    <div class="table-container">
+      <table class="results-table" aria-label="Preview results">
+        <thead>
+          <tr>
+            <th scope="col">Filename</th>
+            <th scope="col">Type</th>
+            <th scope="col">Value</th>
+            <th scope="col">Matched XPath</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (item of items(); track item.filename) {
+            <tr [class.default-value]="item.matchedXpath === null">
+              <td class="filename-cell">{{ item.filename }}</td>
+              <td class="type-cell">
+                <span
+                  class="type-badge"
+                  [class.topic]="item.ditaType === 'TOPIC'"
+                  [class.map]="item.ditaType === 'MAP'"
+                >
+                  {{ item.ditaType }}
+                </span>
+              </td>
+              <td class="value-cell">
+                @if (item.value) {
+                  {{ item.value }}
+                } @else {
+                  <span class="null-value">null</span>
+                }
+              </td>
+              <td class="xpath-cell">
+                @if (item.matchedXpath) {
+                  <code>{{ item.matchedXpath }}</code>
+                } @else {
+                  <span class="default-indicator">default</span>
+                }
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    @if (isLoading()) {
+      <div class="loading-more">
+        <p>Loading more results...</p>
+      </div>
+    }
+  }
+</div>

@@ -1,0 +1,54 @@
+:host {
+  display: block;
+}
+
+.progress-section {
+  background: #e3f2fd;
+  border: 1px solid #2196f3;
+  border-radius: 4px;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+.progress-bar-container {
+  width: 100%;
+  height: 24px;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #0070f3 0%, #005fcc 100%);
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  margin: 0 0 10px 0;
+  font-size: 14px;
+  color: #0d47a1;
+}
+
+.stop-button {
+  padding: 8px 16px;
+  background: #d32f2f;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  min-height: 36px;
+}
+
+.stop-button:hover {
+  background: #c62828;
+}
+
+.stop-button:focus-visible {
+  outline: 2px solid #d32f2f;
+  outline-offset: 2px;
+}

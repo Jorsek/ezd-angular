@@ -1,0 +1,215 @@
+/**
+ * Find/Replace Component Styles
+ * Parent container styles only - sub-component styles are encapsulated
+ */
+
+.find-replace-container {
+  font-family: var(--font-family, Arial, sans-serif);
+  font-size: 14px;
+  color: #333;
+  width: 100%;
+  height: 100vh;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+.find-replace-content {
+  background: #fff;
+  padding: 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Constrain some sections to reasonable width */
+.header,
+.action-buttons,
+.error-banner {
+  max-width: 1400px;
+}
+
+/* Header */
+.header h2 {
+  margin: 0 0 20px 0;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+/* Form Sections Layout - Two column grid */
+.form-sections {
+  display: grid;
+  grid-template-columns: 400px 1fr;
+  gap: 20px;
+  margin-bottom: 15px;
+  flex-shrink: 0;
+  max-width: 1400px;
+}
+
+/* Replace Section (kept in parent) */
+.replace-section {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 15px;
+  background: #fafafa;
+  max-width: 1400px;
+  display: grid;
+  grid-template-columns: 400px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.replace-section h3 {
+  grid-column: 1 / -1;
+}
+
+.coming-soon {
+  font-size: 12px;
+  color: #666;
+  font-weight: normal;
+  font-style: italic;
+}
+
+.form-field {
+  margin-bottom: 15px;
+}
+
+.form-field label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+.form-field input[type='text'] {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.form-field input[type='text']:disabled {
+  background: #f5f5f5;
+  cursor: not-allowed;
+}
+
+/* Disabled Sections */
+.disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 15px 0;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 15px;
+  flex-shrink: 0;
+}
+
+.primary-button,
+.secondary-button {
+  padding: 10px 24px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  min-height: 44px;
+  min-width: 100px;
+}
+
+.primary-button {
+  background: #0070f3;
+  color: #fff;
+}
+
+.primary-button:hover:not(:disabled) {
+  background: #005fcc;
+}
+
+.primary-button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.primary-button:focus-visible {
+  outline: 2px solid #0070f3;
+  outline-offset: 2px;
+}
+
+.secondary-button {
+  background: #fff;
+  color: #333;
+  border: 1px solid #ccc;
+}
+
+.secondary-button:hover:not(:disabled) {
+  background: #f0f0f0;
+}
+
+.secondary-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.secondary-button:focus-visible {
+  outline: 2px solid #0070f3;
+  outline-offset: 2px;
+}
+
+/* Error Banner */
+.error-banner {
+  background: #ffebee;
+  border: 1px solid #f44336;
+  border-radius: 4px;
+  padding: 15px;
+  margin-bottom: 20px;
+  color: #c62828;
+}
+
+.error-banner strong {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.download-csv-button {
+  margin-top: 10px;
+  padding: 8px 16px;
+  background: #4caf50;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.download-csv-button:hover {
+  background: #45a049;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .form-sections {
+    grid-template-columns: 1fr;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+  }
+
+  .primary-button,
+  .secondary-button {
+    width: 100%;
+  }
+}

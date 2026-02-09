@@ -1,0 +1,156 @@
+:host {
+  display: block;
+}
+
+.file-group {
+  border-bottom: 1px solid #eee;
+}
+
+.file-group:last-child {
+  border-bottom: none;
+}
+
+.file-header-row {
+  display: flex;
+  align-items: center;
+  background: #f9f9f9;
+}
+
+.file-header-row:hover {
+  background: #f0f0f0;
+}
+
+.file-header {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  padding: 12px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  font-size: 14px;
+  min-height: 44px;
+  gap: 8px;
+}
+
+.file-header:hover {
+  background: transparent;
+}
+
+.file-header:focus-visible {
+  outline: 2px solid #0070f3;
+  outline-offset: -2px;
+}
+
+.share-link {
+  padding: 6px 12px;
+  margin-left: 8px;
+  margin-right: 8px;
+  color: #0070f3;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.share-link:hover {
+  background: #e3f2fd;
+  text-decoration: underline;
+}
+
+.share-link:focus-visible {
+  outline: 2px solid #0070f3;
+  outline-offset: 2px;
+}
+
+.expand-icon {
+  font-size: 12px;
+  width: 16px;
+  flex-shrink: 0;
+  color: #666;
+}
+
+.file-name {
+  font-weight: 600;
+  color: #0070f3;
+  flex-shrink: 0;
+}
+
+.file-path {
+  color: #666;
+  font-size: 12px;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.match-count {
+  background: #e3f2fd;
+  color: #0d47a1;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  flex-shrink: 0;
+  margin-left: 12px;
+}
+
+.matches-list {
+  padding: 0 12px 12px 36px;
+  background: #fff;
+}
+
+.match-item {
+  padding: 10px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.match-item:last-child {
+  border-bottom: none;
+}
+
+.match-xpath {
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  color: #795548;
+  margin-bottom: 4px;
+  word-break: break-all;
+}
+
+.match-context {
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  line-height: 1.4;
+  background: #fafafa;
+  padding: 8px;
+  border-radius: 4px;
+  word-break: break-all;
+  white-space: pre-wrap;
+}
+
+.context-before,
+.context-after {
+  color: #666;
+}
+
+.match-highlight {
+  background: #fff59d;
+  color: #333;
+  font-weight: 600;
+  padding: 1px 0;
+}
+
+@media (max-width: 768px) {
+  .file-header {
+    flex-wrap: wrap;
+  }
+
+  .file-path {
+    width: 100%;
+    order: 3;
+    margin-top: 4px;
+  }
+}

@@ -1,0 +1,70 @@
+:host {
+  display: block;
+}
+
+/* Skeleton loading state — mirrors folder-insights-display layout */
+.skeleton-container {
+  padding: 16px 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.skeleton-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.skeleton-breakdown {
+  padding-top: 16px;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  flex-direction: column;
+}
+
+.skeleton-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 4px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.skeleton-row ccms-skeleton {
+  display: block;
+  flex-shrink: 0;
+  margin: 0;
+}
+
+.skeleton-row ccms-skeleton:first-child {
+  flex: 1;
+}
+
+.skeleton-row:last-child {
+  border-bottom: none;
+}
+
+/* Error state */
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  text-align: center;
+}
+
+.error-state i {
+  font-family: 'easyDITA-Font' !important;
+  font-style: normal;
+  font-size: 24px;
+  color: #dc2626;
+  margin-bottom: 4px;
+}
+
+.error-state p {
+  font-size: 13px;
+  color: #666;
+  margin: 0;
+}

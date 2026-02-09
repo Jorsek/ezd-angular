@@ -1,0 +1,63 @@
+<div class="ccms-dialog" tabindex="-1">
+  <header class="ccms-dialog__header">
+    <div class="ccms-dialog__header-content">
+      <h2 class="ccms-dialog__title">{{ title() }}</h2>
+      @if (description()) {
+        <p class="ccms-dialog__description">{{ description() }}</p>
+      }
+    </div>
+    @if (showCloseButton()) {
+      <button
+        type="button"
+        class="ccms-dialog__close"
+        aria-label="Close dialog"
+        (click)="onCloseClick()"
+      >
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          aria-hidden="true"
+        >
+          <path d="M18 6L6 18M6 6l12 12" />
+        </svg>
+      </button>
+    }
+  </header>
+
+  <div class="ccms-dialog__content">
+    <ng-content />
+  </div>
+
+  @if (buttons().length > 0) {
+    <footer class="ccms-dialog__actions">
+      <div class="ccms-dialog__actions-left">
+        @for (button of leftButtons(); track button.label) {
+          <button
+            type="button"
+            class="ccms-dialog__button ccms-dialog__button--danger"
+            [disabled]="button.disabled"
+            (click)="button.onClick()"
+          >
+            {{ button.label }}
+          </button>
+        }
+      </div>
+      <div class="ccms-dialog__actions-right">
+        @for (button of rightButtons(); track button.label) {
+          <button
+            type="button"
+            class="ccms-dialog__button"
+            [class.ccms-dialog__button--action]="button.type === 'action'"
+            [class.ccms-dialog__button--danger-action]="button.type === 'danger-action'"
+            [disabled]="button.disabled"
+            (click)="button.onClick()"
+          >
+            {{ button.label }}
+          </button>
+        }
+      </div>
+    </footer>
+  }
+</div>

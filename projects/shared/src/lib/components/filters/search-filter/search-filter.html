@@ -1,0 +1,20 @@
+<div class="filter-search">
+  <span class="filter-search__icon" aria-hidden="true"></span>
+  <input
+    type="search"
+    class="filter-search__input"
+    [placeholder]="placeholder()"
+    [value]="displayValue()"
+    (input)="onInput($event)"
+    (search)="onSearch($event)"
+  />
+  <button
+    type="button"
+    class="filter-search__clear"
+    [class.filter-search__clear--visible]="displayValue() && clearable()"
+    [title]="'Clear search'"
+    aria-label="Clear search"
+    [attr.tabindex]="displayValue() && clearable() ? 0 : -1"
+    (click)="onClear()"
+  ></button>
+</div>

@@ -1,0 +1,63 @@
+<ccms-report-section
+  [title]="title()"
+  [summaryText]="summaryText()"
+  [icon]="icon()"
+  [loading]="loading()"
+>
+  @if (loading()) {
+    <!-- Loading skeletons -->
+    <div class="callouts">
+      @if (highlighted()) {
+        <div class="highlighted">
+          <ccms-skeleton variant="card" />
+        </div>
+      }
+      <div class="grid">
+        @for (item of items(); track item.id) {
+          <ccms-skeleton variant="card" />
+        }
+      </div>
+    </div>
+  } @else if (!hasData()) {
+    <!-- No data state -->
+    <div class="no-data">
+      <p class="no-data-text">No data available</p>
+    </div>
+  } @else {
+    <div class="callouts">
+      <!-- Highlighted callout (only if value exists in response) -->
+      @if (hasHighlightedValue()) {
+        @if (highlighted(); as h) {
+          <div class="highlighted">
+            <ccms-stat-card
+              [label]="h.label"
+              [value]="getValue(h.id) ?? 0"
+              [info]="h.info"
+              [suffix]="h.suffix"
+              [icon]="h.icon"
+              [highlight]="true"
+              [compact]="h.compact ?? compact()"
+              [compactThreshold]="h.compactThreshold"
+            />
+          </div>
+        }
+      }
+      <!-- Grid of regular callouts (only those with values in response) -->
+      @if (visibleItems().length) {
+        <div class="grid">
+          @for (item of visibleItems(); track item.id) {
+            <ccms-stat-card
+              [label]="item.label"
+              [value]="getValue(item.id) ?? 0"
+              [info]="item.info"
+              [suffix]="item.suffix"
+              [icon]="item.icon"
+              [compact]="item.compact ?? compact()"
+              [compactThreshold]="item.compactThreshold"
+            />
+          }
+        </div>
+      }
+    </div>
+  }
+</ccms-report-section>

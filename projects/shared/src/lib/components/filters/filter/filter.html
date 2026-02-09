@@ -1,0 +1,16 @@
+<span class="filter-label">{{ label() }}:</span>
+<ng-content />
+
+@if (expandable()) {
+  <span class="filter-chevron"></span>
+}
+
+@if (removable()) {
+  <button
+    type="button"
+    class="filter-remove"
+    [title]="'Remove ' + label() + ' filter'"
+    [attr.aria-label]="'Remove ' + label() + ' filter'"
+    (click)="onRemoveClick($event)"
+  ></button>
+}

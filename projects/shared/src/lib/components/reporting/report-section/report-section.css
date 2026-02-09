@@ -1,0 +1,40 @@
+/* Host element layout */
+ccms-report-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Header section */
+ccms-report-section .header {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+ccms-report-section .header-icon {
+  font-size: 1.25rem;
+  width: 1.5rem;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+ccms-report-section .header-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+ccms-report-section .header-title {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+ccms-report-section .header-summary {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #6b7280;
+}

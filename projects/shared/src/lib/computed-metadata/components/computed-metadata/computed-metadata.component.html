@@ -1,0 +1,61 @@
+<div class="computed-metadata">
+  @if (error()) {
+    <div class="error-banner" role="alert">
+      {{ error() }}
+      <button type="button" class="dismiss-btn" (click)="error.set(null)" aria-label="Dismiss">
+        &times;
+      </button>
+    </div>
+  }
+
+  <header class="header">
+    <div class="header-text">
+      <div class="title-row">
+        <h2 class="title">Extracted Metadata Fields</h2>
+        <span class="count">({{ definitions().length }})</span>
+      </div>
+      <p class="description">Configure computed fields that extract data using XPath expressions</p>
+    </div>
+    <span
+      [class.btn-disabled-wrapper]="!canCreateNew()"
+      [title]="canCreateNew() ? '' : 'Maximum 3 computed metadata fields'"
+    >
+      <button
+        type="button"
+        class="btn btn-primary"
+        (click)="onCreateNew()"
+        [disabled]="!canCreateNew()"
+      >
+        <span class="btn-icon">+</span>
+        <span class="btn-text">Add Field</span>
+      </button>
+    </span>
+  </header>
+
+  <main class="content">
+    @if (isLoading()) {
+      <div class="loading-state">
+        <p>Loading definitions...</p>
+      </div>
+    } @else {
+      <ccms-definition-list
+        [definitions]="definitions()"
+        [recomputingId]="recomputingId()"
+        [recomputeProgress]="recomputeProgress()"
+        (edit)="onEdit($event)"
+        (deleteItem)="onDelete($event)"
+        (recompute)="onRecompute($event)"
+        (reorder)="onReorder($event)"
+      />
+    }
+  </main>
+
+  @if (showFormDialog()) {
+    <ccms-definition-form-dialog
+      [definition]="editingDefinition()"
+      [isSubmitting]="isSaving()"
+      (save)="onDialogSave($event)"
+      (closeRequest)="onDialogClose()"
+    />
+  }
+</div>

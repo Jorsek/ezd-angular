@@ -1,0 +1,18 @@
+<button
+  class="button"
+  [class.button--primary]="variant() === 'primary'"
+  [class.button--secondary]="variant() === 'secondary'"
+  [disabled]="disabled()"
+  [attr.aria-label]="effectiveAriaLabel()"
+  [attr.aria-disabled]="disabled()"
+  [attr.tabindex]="isInteractive() ? 0 : -1"
+  (click)="handleClick($event)"
+  (keydown)="handleKeyDown($event)"
+  type="button"
+>
+  @if (label()) {
+    <span class="button__label">{{ label() }}</span>
+  } @else {
+    <ng-content></ng-content>
+  }
+</button>

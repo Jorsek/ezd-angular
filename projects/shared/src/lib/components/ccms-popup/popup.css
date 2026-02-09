@@ -1,0 +1,19 @@
+.ccms-popup-backdrop {
+  position: fixed;
+  inset: 0;
+  background: var(--ccms-popup-backdrop-bg, rgba(0, 0, 0, 0.4));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--ccms-popup-z-index, 1000);
+  opacity: 0;
+  transition: opacity var(--ccms-popup-transition-duration, 150ms) ease-out;
+}
+
+.ccms-popup-backdrop.ccms-popup-visible {
+  opacity: 1;
+}
+
+.ccms-popup-content {
+  position: relative;
+}

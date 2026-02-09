@@ -1,0 +1,49 @@
+<div class="file-group">
+  <div class="file-header-row">
+    <span class="match-count">{{ fileMatch().matches.length }} matches</span>
+    <a
+      class="share-link"
+      [href]="'/share/' + fileMatch().resource.uuid"
+      target="_blank"
+      title="Open in share view"
+      (click)="$event.stopPropagation()"
+    >
+      Open
+    </a>
+    <button
+      type="button"
+      class="file-header"
+      (click)="onHeaderClick()"
+      [attr.aria-expanded]="expanded()"
+    >
+      <span class="expand-icon">
+        @if (expanded()) {
+          ▼
+        } @else {
+          ▶
+        }
+      </span>
+      <span class="file-name">{{ fileMatch().resource.fileName }}</span>
+      <span class="file-path">{{ fileMatch().resource.path }}</span>
+    </button>
+  </div>
+
+  @if (expanded()) {
+    <div class="matches-list">
+      @for (match of fileMatch().matches; track $index) {
+        <div class="match-item">
+          @if (match.xpath) {
+            <div class="match-xpath">{{ match.xpath }}</div>
+          }
+          <div class="match-context">
+            <span class="context-before">{{ match.context.substring(0, match.matchStart) }}</span
+            ><mark class="match-highlight">{{
+              match.context.substring(match.matchStart, match.matchEnd)
+            }}</mark
+            ><span class="context-after">{{ match.context.substring(match.matchEnd) }}</span>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

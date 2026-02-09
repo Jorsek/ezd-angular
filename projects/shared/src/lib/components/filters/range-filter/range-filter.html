@@ -1,0 +1,37 @@
+<ccms-filter [label]="label()" [removable]="removable()" (removed)="removed.emit()">
+  @if (type() === 'number') {
+    <input
+      type="number"
+      class="filter-input filter-input--range"
+      placeholder="Min"
+      [value]="range().min ?? ''"
+      aria-label="Minimum value"
+      (input)="onMinInput($event)"
+    />
+    <span class="filter-range-separator">–</span>
+    <input
+      type="number"
+      class="filter-input filter-input--range"
+      placeholder="Max"
+      [value]="range().max ?? ''"
+      aria-label="Maximum value"
+      (input)="onMaxInput($event)"
+    />
+  } @else {
+    <input
+      type="date"
+      class="filter-input filter-input--range"
+      [value]="interval().start ?? ''"
+      aria-label="Start date"
+      (input)="onStartInput($event)"
+    />
+    <span class="filter-range-separator">–</span>
+    <input
+      type="date"
+      class="filter-input filter-input--range"
+      [value]="interval().end ?? ''"
+      aria-label="End date"
+      (input)="onEndInput($event)"
+    />
+  }
+</ccms-filter>

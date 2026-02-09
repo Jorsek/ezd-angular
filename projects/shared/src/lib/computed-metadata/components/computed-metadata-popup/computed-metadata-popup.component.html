@@ -1,0 +1,10 @@
+<div class="ccms-overlay" (click)="onOverlayClick($event)">
+  <div class="ccms-popup" role="dialog" aria-modal="true" aria-labelledby="popup-title">
+    <button type="button" class="ccms-close-button" (click)="close()" aria-label="Close dialog">
+      &times;
+    </button>
+    <div class="ccms-popup-content">
+      <ccms-computed-metadata />
+    </div>
+  </div>
+</div>

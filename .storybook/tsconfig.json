@@ -1,0 +1,16 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true
+  },
+  "include": [
+    "../projects/shared/src/**/*.stories.ts",
+    "../projects/shared/src/**/*.ts",
+    "*.ts"
+  ],
+  "exclude": [
+    "../projects/shared/src/**/*.spec.ts"
+  ]
+}

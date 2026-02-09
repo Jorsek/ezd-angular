@@ -1,0 +1,141 @@
+.ccms-dialog {
+  background: var(--ccms-dialog-bg, #fff);
+  border-radius: var(--ccms-dialog-border-radius, 8px);
+  box-shadow: var(--ccms-dialog-shadow, 0 4px 24px rgba(0, 0, 0, 0.15));
+  min-width: var(--ccms-dialog-min-width, 400px);
+  max-width: var(--ccms-dialog-max-width, 560px);
+  outline: none;
+}
+
+.ccms-dialog__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 0;
+}
+
+.ccms-dialog__header-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.ccms-dialog__title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--ccms-dialog-title-color, #1a1a1a);
+}
+
+.ccms-dialog__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--ccms-dialog-close-color, #666);
+  cursor: pointer;
+  transition:
+    background-color 0.15s,
+    color 0.15s;
+}
+
+.ccms-dialog__close:hover {
+  background: var(--ccms-dialog-close-hover-bg, #f0f0f0);
+  color: var(--ccms-dialog-close-hover-color, #333);
+}
+
+.ccms-dialog__close svg {
+  width: 20px;
+  height: 20px;
+}
+
+.ccms-dialog__description {
+  margin: 8px 0 0;
+  font-size: 14px;
+  color: var(--ccms-dialog-description-color, #666);
+}
+
+.ccms-dialog__content {
+  padding: 16px 24px;
+}
+
+.ccms-dialog__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 16px 24px 24px;
+  border-top: 1px solid var(--ccms-dialog-border-color, #e5e5e5);
+}
+
+.ccms-dialog__actions-left {
+  display: flex;
+  gap: 8px;
+}
+
+.ccms-dialog__actions-right {
+  display: flex;
+  gap: 8px;
+}
+
+.ccms-dialog__button {
+  padding: 10px 16px;
+  border: 1px solid var(--ccms-dialog-button-border, #d1d5db);
+  border-radius: 6px;
+  background: var(--ccms-dialog-button-bg, #fff);
+  color: var(--ccms-dialog-button-color, #374151);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background-color 0.15s,
+    border-color 0.15s;
+}
+
+.ccms-dialog__button:hover:not(:disabled) {
+  background: var(--ccms-dialog-button-hover-bg, #f9fafb);
+  border-color: var(--ccms-dialog-button-hover-border, #9ca3af);
+}
+
+.ccms-dialog__button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.ccms-dialog__button--action {
+  background: var(--ccms-dialog-action-bg, #1f2937);
+  border-color: var(--ccms-dialog-action-border, #1f2937);
+  color: var(--ccms-dialog-action-color, #fff);
+}
+
+.ccms-dialog__button--action:hover:not(:disabled) {
+  background: var(--ccms-dialog-action-hover-bg, #111827);
+  border-color: var(--ccms-dialog-action-hover-border, #111827);
+}
+
+.ccms-dialog__button--danger {
+  background: var(--ccms-dialog-danger-bg, #fff);
+  border-color: var(--ccms-dialog-danger-border, #ef4444);
+  color: var(--ccms-dialog-danger-color, #ef4444);
+}
+
+.ccms-dialog__button--danger:hover:not(:disabled) {
+  background: var(--ccms-dialog-danger-hover-bg, #fef2f2);
+  border-color: var(--ccms-dialog-danger-hover-border, #dc2626);
+  color: var(--ccms-dialog-danger-hover-color, #dc2626);
+}
+
+.ccms-dialog__button--danger-action {
+  background: var(--ccms-dialog-danger-action-bg, #dc2626);
+  border-color: var(--ccms-dialog-danger-action-border, #dc2626);
+  color: var(--ccms-dialog-danger-action-color, #fff);
+}
+
+.ccms-dialog__button--danger-action:hover:not(:disabled) {
+  background: var(--ccms-dialog-danger-action-hover-bg, #b91c1c);
+  border-color: var(--ccms-dialog-danger-action-hover-border, #b91c1c);
+}

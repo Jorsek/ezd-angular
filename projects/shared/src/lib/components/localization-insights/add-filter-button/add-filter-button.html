@@ -1,0 +1,26 @@
+<button
+  type="button"
+  class="add-filter-button__trigger"
+  [ccmsPopupMenuTrigger]="filterMenu"
+  [disabled]="isDisabled()"
+>
+  <span class="add-filter-button__icon">+</span>
+  <span class="add-filter-button__text">Add</span>
+</button>
+
+<ccms-popup-menu #filterMenu>
+  @for (filter of baseFilters(); track filter.id) {
+    <ccms-popup-menu-item (selected)="onItemSelected(filter)">
+      {{ filter.label }}
+    </ccms-popup-menu-item>
+  }
+  @if (metadataFilters().length > 0) {
+    <ccms-popup-submenu label="Metadata">
+      @for (filter of metadataFilters(); track filter.id) {
+        <ccms-popup-menu-item (selected)="onItemSelected(filter)">
+          {{ filter.label }}
+        </ccms-popup-menu-item>
+      }
+    </ccms-popup-submenu>
+  }
+</ccms-popup-menu>

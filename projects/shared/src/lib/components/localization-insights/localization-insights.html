@@ -1,0 +1,65 @@
+<!-- Cell Templates -->
+<ng-template #jobsCell let-row="row">
+  @for (job of $any(row['includedInJobs']); track job; let last = $last) {
+    <button class="job-link" (click)="openJobPopup(job.id)" type="button">{{ job.id }}</button>
+    @if (!last) {
+      ,
+    }
+  }
+</ng-template>
+
+<div class="localization-insights">
+  <ccms-report
+    title="Localization Dashboard"
+    description="Monitor and manage localization status across all projects"
+    [showHeader]="showHeader()"
+    [insightType]="'LOCALIZATION'"
+    [defaultViews]="[defaultView]"
+    [currentViewService]="currentViewService"
+    [loading]="reportLoading()"
+    [errors]="errors()"
+    (retry)="refreshViews()"
+  >
+    <div
+      class="localization-insights__body"
+      [class.localization-insights__body--bordered]="showBorder()"
+    >
+      <section class="localization-insights__filters">
+        <ccms-filter-section
+          [allFilters]="filters()"
+          [activeFilters]="activeFilters()"
+          [searchFields]="searchFields()"
+          (filtersChanged)="filtersChanged($event)"
+        />
+      </section>
+      <section>
+        <ccms-callout-section
+          class="four-column"
+          [callouts]="calloutValues()"
+          [items]="calloutItems"
+        />
+        <ccms-custom-chart-list [charts]="charts()" [fields]="allFields()" [editable]="false" />
+      </section>
+      <section class="table-section">
+        <ccms-rich-table
+          [columnDefs]="columns()"
+          [visibleColumnIds]="visibleColumnIds()"
+          (visibleColumnIdsChange)="onVisibleColumnsChange($event)"
+          [data]="detailsData()"
+          [sort]="detailsSort()"
+          (sorted)="onSorted($event)"
+          [rowKeyProvider]="getRowKey"
+          [enableDownloadCsv]="true"
+          [downloadCsv]="downloadCsv"
+          [loading]="false"
+          [loadingMore]="detailsLoadingMore()"
+          [hasMore]="detailsHasMore()"
+          [totalRows]="detailsTotal()"
+          (loadMore)="loadNextPage()"
+        />
+      </section>
+    </div>
+  </ccms-report>
+</div>
+
+<ccms-notification-outlet />

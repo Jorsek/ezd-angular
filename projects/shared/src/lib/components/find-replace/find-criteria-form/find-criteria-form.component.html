@@ -1,0 +1,162 @@
+<section class="search-section">
+  <h3>Find</h3>
+
+  <!-- Text to find -->
+  <div class="form-field">
+    <label for="search-pattern">Text to find:</label>
+    <input
+      id="search-pattern"
+      type="text"
+      [value]="pattern()"
+      (input)="onPatternInput($event)"
+      [disabled]="disabled()"
+      aria-required="true"
+      [attr.aria-invalid]="!isPatternValid()"
+    />
+    @if (!isPatternValid() && pattern().length > 0) {
+      <span class="error-message">Search pattern is required</span>
+    }
+  </div>
+
+  <!-- Search Options -->
+  <div class="search-options">
+    <label class="checkbox-label">
+      <input
+        type="checkbox"
+        [checked]="useRegex()"
+        (change)="onUseRegexChange($event)"
+        [disabled]="disabled()"
+      />
+      <span>Use regex</span>
+    </label>
+
+    <label class="checkbox-label">
+      <input
+        type="checkbox"
+        [checked]="caseSensitive()"
+        (change)="onCaseSensitiveChange($event)"
+        [disabled]="disabled()"
+      />
+      <span>Case sensitive</span>
+    </label>
+
+    <label class="checkbox-label">
+      <input
+        type="checkbox"
+        [checked]="wholeWordsOnly()"
+        (change)="onWholeWordsOnlyChange($event)"
+        [disabled]="disabled()"
+      />
+      <span>Whole words only</span>
+    </label>
+
+    <label class="checkbox-label">
+      <input
+        type="checkbox"
+        [checked]="ignoreWhitespace()"
+        (change)="onIgnoreWhitespaceChange($event)"
+        [disabled]="disabled()"
+      />
+      <span>Ignore extra whitespaces</span>
+    </label>
+  </div>
+
+  <!-- Content Types Grid -->
+  <div class="content-types-section">
+    <label>Search only in:</label>
+    <div class="content-types-grid">
+      <label class="checkbox-label">
+        <input
+          type="checkbox"
+          [checked]="isContentTypeSelected('ELEMENT_NAMES')"
+          [disabled]="disabled()"
+          (change)="toggleContentType('ELEMENT_NAMES')"
+        />
+        <span>Element names</span>
+      </label>
+
+      <label class="checkbox-label">
+        <input
+          type="checkbox"
+          [checked]="isContentTypeSelected('ATTRIBUTE_VALUES')"
+          [disabled]="disabled()"
+          (change)="toggleContentType('ATTRIBUTE_VALUES')"
+        />
+        <span>Attribute values</span>
+      </label>
+
+      <label class="checkbox-label">
+        <input
+          type="checkbox"
+          [checked]="isContentTypeSelected('CDATA_SECTIONS')"
+          [disabled]="disabled()"
+          (change)="toggleContentType('CDATA_SECTIONS')"
+        />
+        <span>CDATA</span>
+      </label>
+
+      <label class="checkbox-label">
+        <input
+          type="checkbox"
+          [checked]="isContentTypeSelected('ELEMENT_CONTENT')"
+          [disabled]="disabled()"
+          (change)="toggleContentType('ELEMENT_CONTENT')"
+        />
+        <span>Element contents</span>
+      </label>
+
+      <label class="checkbox-label">
+        <input
+          type="checkbox"
+          [checked]="isContentTypeSelected('COMMENTS')"
+          [disabled]="disabled()"
+          (change)="toggleContentType('COMMENTS')"
+        />
+        <span>Comments</span>
+      </label>
+
+      <label class="checkbox-label">
+        <input
+          type="checkbox"
+          [checked]="isContentTypeSelected('PROCESSING_INSTRUCTIONS')"
+          [disabled]="disabled()"
+          (change)="toggleContentType('PROCESSING_INSTRUCTIONS')"
+        />
+        <span>PIs</span>
+      </label>
+
+      <label class="checkbox-label">
+        <input
+          type="checkbox"
+          [checked]="isContentTypeSelected('ATTRIBUTE_NAMES')"
+          [disabled]="disabled()"
+          (change)="toggleContentType('ATTRIBUTE_NAMES')"
+        />
+        <span>Attribute names</span>
+      </label>
+    </div>
+
+    <div class="content-types-actions">
+      <button type="button" (click)="selectAllContentTypes()" [disabled]="disabled()">
+        Select all
+      </button>
+      <button type="button" (click)="deselectAllContentTypes()" [disabled]="disabled()">
+        Deselect all
+      </button>
+    </div>
+  </div>
+
+  <!-- XPath Restriction -->
+  <div class="form-field xpath-field">
+    <label for="xpath-restriction">Restrict to XPath:</label>
+    <input
+      id="xpath-restriction"
+      type="text"
+      [value]="xpathRestriction()"
+      (input)="onXpathRestrictionInput($event)"
+      [disabled]="disabled()"
+      placeholder="e.g., //section[@outputclass='private']"
+    />
+    <span class="field-hint">Only search within elements matching this XPath expression</span>
+  </div>
+</section>

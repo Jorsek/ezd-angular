@@ -1,0 +1,54 @@
+<div class="content-report">
+  <ccms-report
+    title="Content Insights"
+    [showHeader]="false"
+    [loading]="reportLoading()"
+    [insightType]="'CONTENT'"
+    [defaultViews]="defaultViews"
+    [allowUserViews]="true"
+    [currentViewService]="currentViewService"
+    [errors]="errors()"
+    (retry)="refreshViews()"
+  >
+    <div class="content-report__body">
+      <section class="content-report__filters">
+        <ccms-filter-section
+          [allFilters]="filters()"
+          [activeFilters]="activeFilters()"
+          [searchFields]="searchFields()"
+          (filtersChanged)="filtersChanged($event)"
+        />
+      </section>
+
+      <ccms-callout-section class="four-column" [callouts]="callouts()" [items]="calloutItems()" />
+      <ccms-custom-chart-list
+        [charts]="charts()"
+        [fields]="allFields()"
+        (removeChart)="removeChart($event)"
+        (addChart)="addChart($event)"
+        (updateChart)="updateChart($event)"
+        (reorder)="onChartsReorder($event)"
+      />
+      <section class="table-section">
+        <ccms-rich-table
+          [columnDefs]="columns()"
+          [visibleColumnIds]="visibleColumnIds()"
+          (visibleColumnIdsChange)="onVisibleColumnsChange($event)"
+          [data]="allRows()"
+          [totalRows]="tableTotalRows()"
+          [sort]="sort()"
+          (sorted)="onSorted($event)"
+          [rowKeyProvider]="getRowKey"
+          [enableDownloadCsv]="true"
+          [downloadCsv]="downloadCsv.bind(this)"
+          [loading]="false"
+          [loadingMore]="tableLoadingMore()"
+          [hasMore]="tableHasMore()"
+          (loadMore)="loadNextPage()"
+        />
+      </section>
+    </div>
+  </ccms-report>
+</div>
+
+<ccms-notification-outlet />

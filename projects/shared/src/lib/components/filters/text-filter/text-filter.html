@@ -1,0 +1,9 @@
+<ccms-filter [label]="label()" [removable]="removable()" (removed)="removed.emit()">
+  <input
+    type="text"
+    class="filter-input"
+    [placeholder]="placeholder()"
+    [value]="value()"
+    (input)="onInput($event)"
+  />
+</ccms-filter>

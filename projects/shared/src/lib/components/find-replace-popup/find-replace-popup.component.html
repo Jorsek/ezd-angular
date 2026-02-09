@@ -1,0 +1,18 @@
+<div class="ccms-overlay" (click)="onOverlayClick($event)">
+  <div class="ccms-popup" role="dialog" aria-modal="true" aria-labelledby="popup-title">
+    <div class="ccms-popup-header">
+      <h1 id="popup-title">Find/Replace</h1>
+      <button type="button" class="ccms-close-button" (click)="close()" aria-label="Close dialog">
+        &times;
+      </button>
+    </div>
+    <div class="ccms-popup-content">
+      <ccms-find-replace
+        [initialResourceUuid]="resourceUuid()"
+        [initialDirectoryUuid]="directoryUuid()"
+        [initialContextType]="initialContextType()"
+        [initialExplicitOnly]="explicitOnly()"
+      />
+    </div>
+  </div>
+</div>

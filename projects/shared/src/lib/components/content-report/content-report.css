@@ -1,0 +1,65 @@
+:host {
+  display: block;
+  background-color: #f9fafb;
+}
+
+/* Outer wrapper - matches localization-insights pattern */
+.content-report {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.content-report > * {
+  flex-grow: 0;
+}
+
+/* Body container - creates flex context and constrains width */
+.content-report__body {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5em;
+  min-width: 0; /* Allow flex container to shrink below content size */
+}
+
+/* Filters section wrapper */
+.content-report__filters {
+  background-color: #fff;
+}
+
+/* First-level children get horizontal padding to maintain content alignment */
+ccms-view-section,
+.stat-cards,
+ccms-callout-section,
+ccms-custom-chart-list,
+.table-section {
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+/* Callout section spacing */
+ccms-callout-section {
+  display: block;
+}
+
+/* View section needs top padding since container no longer has it */
+ccms-view-section {
+  display: block;
+  padding-top: 16px;
+  padding-bottom: 16px;
+  background-color: #fff;
+}
+
+/* Table section - only padding, body container handles overflow */
+.table-section {
+  padding-bottom: 16px;
+}
+
+.stat-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  box-sizing: border-box;
+}

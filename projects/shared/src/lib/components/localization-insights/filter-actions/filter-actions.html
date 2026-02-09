@@ -1,0 +1,11 @@
+<div class="filter-actions">
+  <button
+    type="button"
+    class="filter-actions__clear"
+    [disabled]="!hasFilters()"
+    (click)="onClear()"
+    (keydown)="onClearKeyDown($event)"
+  >
+    Clear Filters
+  </button>
+</div>

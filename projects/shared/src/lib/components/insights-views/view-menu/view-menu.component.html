@@ -1,0 +1,48 @@
+<div class="ccms-view-menu">
+  @if (loading()) {
+    <div class="ccms-view-menu__skeleton">
+      <span class="ccms-view-menu__skeleton-label">View</span>
+      <span class="ccms-view-menu__skeleton-content"></span>
+    </div>
+  } @else {
+    <button class="ccms-view-menu__trigger" [ccmsPopupMenuTrigger]="viewMenu">
+      <span class="ccms-view-menu__label">View</span>
+      <span
+        class="ccms-view-menu__selected"
+        [class.ccms-view-menu__selected--active]="selectedView()"
+      >
+        {{ selectedView()?.name ?? 'Select View' }}
+      </span>
+      <span class="ccms-view-menu__caret"></span>
+    </button>
+
+    <ccms-popup-menu #viewMenu>
+      @for (view of items(); track view.id) {
+        <ccms-popup-menu-item [value]="view.id" (selected)="onViewSelected(view)">
+          <div class="ccms-view-menu__item-content">
+            <div class="ccms-view-menu__item-text">
+              <span class="ccms-view-menu__item-name">{{ view.name }}</span>
+              <span class="ccms-view-menu__item-description">{{ view.description }}</span>
+            </div>
+            <button
+              type="button"
+              class="ccms-view-menu__item-edit"
+              aria-label="Edit view"
+              (click)="onEditView($event, view)"
+            >
+              <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                <path
+                  d="M11.13 1.47a1.75 1.75 0 0 1 2.47 0l.94.94a1.75 1.75 0 0 1 0 2.47l-7.5 7.5a1.75 1.75 0 0 1-.9.47l-2.7.54a.75.75 0 0 1-.88-.88l.54-2.7c.07-.33.23-.64.47-.9l7.5-7.5zM12.19 2.53a.25.25 0 0 0-.35 0l-7.5 7.5a.25.25 0 0 0-.07.13l-.36 1.8 1.8-.36a.25.25 0 0 0 .13-.07l7.5-7.5a.25.25 0 0 0 0-.35l-.94-.94z"
+                />
+              </svg>
+            </button>
+          </div>
+        </ccms-popup-menu-item>
+      } @empty {
+        <ccms-popup-menu-item [disabled]="true">
+          <span class="ccms-view-menu__item-name">No views available</span>
+        </ccms-popup-menu-item>
+      }
+    </ccms-popup-menu>
+  }
+</div>

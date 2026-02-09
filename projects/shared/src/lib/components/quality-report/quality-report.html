@@ -1,0 +1,127 @@
+<ng-template #severityTemplate let-row="row">
+  <span class="badge" [class]="getSeverityClass(row.severityCode)">{{
+    enumToFriendly(row.severityCode)
+  }}</span>
+</ng-template>
+
+<ng-template #linkToEditorTemplate let-issue="row">
+  <a
+    href="/ezdnxtgen/#editor;context-id={{ issue.resourceInfo.resourceUuid }};issue-path={{
+      issue.encodedLocation
+    }}"
+    target="_blank"
+    class="link-to-editor"
+  >
+    Editor
+    <span [innerHTML]="openExternalIcon"></span>
+  </a>
+</ng-template>
+
+<ng-template #linkToEditorEttoTemplate let-issue="row">
+  <a
+    href="/ezdnxtgen/#editor;context-id={{ issue.resourceInfo.resourceUuid }};issue-path={{
+      issue.encodedLocation
+    }};issue-message={{ issue.encodedMessage }}"
+    target="_blank"
+    class="link-to-editor"
+  >
+    Etto
+    <span [innerHTML]="openExternalIcon"></span>
+  </a>
+</ng-template>
+
+<ccms-report
+  [insightType]="'QUALITY'"
+  [defaultViews]="defaultView"
+  [allowUserViews]="false"
+  [currentViewService]="currentViewService"
+  [errors]="errors()"
+  (retry)="refresh()"
+>
+  <div class="quality-report">
+    @if (summaries().length === 0) {
+      <div class="empty-state">
+        <div class="empty-state-message">
+          No scans have been run for this file<br />
+          Run a scan to see the results
+        </div>
+      </div>
+    } @else {
+      <ccms-tabs class="tabs">
+        <ccms-tabs-header>
+          <ccms-tab-button [id]="'issues'">Issues</ccms-tab-button>
+          <ccms-tab-button [id]="'summary'">Overview</ccms-tab-button>
+        </ccms-tabs-header>
+        <ccms-tab-content [id]="'issues'">
+          <ccms-filter-section
+            [allFilters]="filtersCats"
+            [activeFilters]="activeFilters()"
+            [hideAddFilterButton]="true"
+            (filtersChanged)="filtersChanged($event)"
+          />
+          <div class="issues-section">
+            <div class="title">Quality Issues</div>
+            <ccms-rich-table
+              [columnDefs]="columnDefs"
+              [data]="allRows()"
+              [totalRows]="totalRows()"
+              [sort]="sort()"
+              (sorted)="onSorted($event)"
+              (loadMore)="loadMore()"
+              [showAddColumnButton]="false"
+              [loading]="false"
+              [loadingMore]="detailsLoadingMore()"
+              [hasMore]="detailsHasMore()"
+              (searchTextChanged)="searchTextChanged($event)"
+              [rowKeyProvider]="getRowKey"
+            />
+          </div>
+        </ccms-tab-content>
+        <ccms-tab-content [id]="'summary'">
+          <div class="charts-grid">
+            <ccms-card>
+              <ccms-doughnut-chart
+                [title]="'Issues by Category'"
+                [data]="categoryCount()"
+                unit="issues"
+                [centerLabel]="'Total Issues'"
+              />
+            </ccms-card>
+            <ccms-card>
+              <ccms-doughnut-chart
+                [title]="'Issues by Severity'"
+                [data]="severityCount()"
+                unit="issues"
+              />
+            </ccms-card>
+            <ccms-card>
+              <ccms-line-chart
+                [title]="'Severity Trend'"
+                [data]="severityTrendData()"
+                [stacked]="true"
+                [areaFill]="true"
+              />
+            </ccms-card>
+            <ccms-card>
+              <ccms-line-chart
+                [title]="'Category Trend'"
+                [data]="categoryTrendData()"
+                [stacked]="true"
+                [areaFill]="true"
+              />
+            </ccms-card>
+            <ccms-card>
+              <ccms-bar-chart
+                [title]="'Topics with Issues Over Time'"
+                [stackedData]="issuesOverTimeData()"
+                unit="topics"
+                [showLegend]="true"
+                [preserveOrder]="true"
+              />
+            </ccms-card>
+          </div>
+        </ccms-tab-content>
+      </ccms-tabs>
+    }
+  </div>
+</ccms-report>

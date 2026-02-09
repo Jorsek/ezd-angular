@@ -1,0 +1,43 @@
+@if (mode() === 'full') {
+  <!-- Full mode: title + filename in two lines -->
+  @if (isClickable()) {
+    <a
+      [href]="computedShareUrl()"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="resource-chip__link"
+    >
+      <i [class]="iconClass()"></i>
+      <span class="resource-chip__text">
+        @if (displayTitle(); as t) {
+          <span class="resource-chip__title">{{ t }}</span>
+        }
+        <span class="resource-chip__filename">{{ displayName() }}</span>
+      </span>
+    </a>
+  } @else {
+    <i [class]="iconClass()"></i>
+    <span class="resource-chip__text">
+      @if (displayTitle(); as t) {
+        <span class="resource-chip__title">{{ t }}</span>
+      }
+      <span class="resource-chip__filename">{{ displayName() }}</span>
+    </span>
+  }
+} @else {
+  <!-- Compact mode: icon + filename inline -->
+  @if (isClickable()) {
+    <a
+      [href]="computedShareUrl()"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="resource-chip__link"
+    >
+      <i [class]="iconClass()"></i>
+      <span class="resource-chip__filename">{{ displayName() }}</span>
+    </a>
+  } @else {
+    <i [class]="iconClass()"></i>
+    <span class="resource-chip__filename">{{ displayName() }}</span>
+  }
+}

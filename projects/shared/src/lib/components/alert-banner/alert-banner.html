@@ -1,0 +1,17 @@
+<span class="ccms-alert-banner__icon">{{ icon() }}</span>
+<span class="ccms-alert-banner__message">{{ message() }}</span>
+@if (hint()) {
+  <span class="ccms-alert-banner__hint">{{ hint() }}</span>
+}
+@if (messages().length > 0) {
+  <ul class="ccms-alert-banner__messages">
+    @for (msg of messages(); track msg) {
+      <li>{{ msg }}</li>
+    }
+  </ul>
+}
+@if (showRetry()) {
+  <button type="button" class="ccms-alert-banner__retry" (click)="onRetryClick()">
+    {{ retryText() }}
+  </button>
+}

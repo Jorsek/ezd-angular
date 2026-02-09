@@ -1,0 +1,161 @@
+<ccms-card class="table-wrapper">
+  <div class="button-container">
+    <div class="add-column-dropdown">
+      @if (showAddColumnButton()) {
+        <button class="add-column-button" [ccmsPopupMenuTrigger]="menu">Add Column</button>
+      }
+
+      <ccms-popup-menu #menu class="demo-menu">
+        @for (item of menuData().items; track item.id) {
+          <ccms-popup-menu-item (selected)="showColumn(item)">{{
+            item.label
+          }}</ccms-popup-menu-item>
+        }
+
+        @for (group of menuData().groups; track group.label) {
+          <ccms-popup-submenu [label]="group.label">
+            @for (sub of group.items; track sub.id) {
+              <ccms-popup-menu-item (selected)="showColumn(sub)">{{
+                sub.label
+              }}</ccms-popup-menu-item>
+            }
+          </ccms-popup-submenu>
+        }
+      </ccms-popup-menu>
+    </div>
+    @if (enableDownloadCsv()) {
+      <button
+        class="download-csv-button"
+        title="Download CSV"
+        [disabled]="isDownloadingCsv()"
+        (click)="handleCsvDownload()"
+      >
+        <span class="download-csv-button__icon" [innerHTML]="iconDownload"></span>
+      </button>
+    }
+  </div>
+
+  <div class="table-container" #tableContainer>
+    <table class="table">
+      <thead>
+        <tr>
+          @for (column of visibleColumnsOrdered(); track column.id) {
+            <th>
+              @if (!column.showOnHover) {
+                <div class="column-header">
+                  @if (column.sortable) {
+                    <!-- Sortable column: clickable button -->
+                    <button
+                      class="column-sort-button"
+                      (click)="onColumnHeaderClick(column)"
+                      type="button"
+                      [attr.aria-label]="'Sort by ' + column.label"
+                    >
+                      <span>{{ column.label }}</span>
+                      <span
+                        class="sort-indicator"
+                        [class.asc]="getSortDirection(column) === 'asc'"
+                        [class.desc]="getSortDirection(column) === 'desc'"
+                      >
+                        @if (isSorted(column)) {
+                          @if (getSortDirection(column) === 'asc') {
+                            ▲
+                          } @else {
+                            ▼
+                          }
+                        } @else {
+                          <span class="sort-placeholder">▲</span>
+                        }
+                      </span>
+                    </button>
+                  } @else {
+                    <!-- Non-sortable column: plain text -->
+                    <span>{{ column.label }}</span>
+                  }
+                  @if (column.removable) {
+                    <button
+                      class="remove-column-btn"
+                      (click)="hideColumn(column)"
+                      type="button"
+                      aria-label="Remove {{ column.label }} column"
+                      title="Remove column"
+                    >
+                      ×
+                    </button>
+                  }
+                </div>
+              }
+            </th>
+          }
+        </tr>
+
+        @if (hasSearchableColumns()) {
+          <tr>
+            @for (column of visibleColumnsOrdered(); track column.id) {
+              <th>
+                @if (column.textSearchable) {
+                  <input
+                    type="text"
+                    class="search-input"
+                    placeholder="Search"
+                    (change)="onSearchTextChange(column, $event)"
+                  />
+                }
+              </th>
+            }
+          </tr>
+        }
+      </thead>
+      <tbody>
+        @if (loading()) {
+          <tr>
+            <td [attr.colspan]="visibleColumns().length" class="text-center">Loading…</td>
+          </tr>
+        }
+
+        @if (!loading() && data().length === 0) {
+          <tr>
+            <td [attr.colspan]="visibleColumns().length" class="text-center">No entries found</td>
+          </tr>
+        }
+
+        @for (row of data(); track getKeyForRow(row)) {
+          <tr>
+            @for (colDef of visibleColumnsOrdered(); track colDef.id) {
+              <td [class]="colDef.id" [class.show-on-hover]="colDef.showOnHover">
+                @if (colDef.cellComponent) {
+                  <ng-container
+                    *ngComponentOutlet="
+                      colDef.cellComponent.type;
+                      inputs: getComponentInputs(colDef, row)
+                    "
+                  />
+                } @else if (colDef.cellTemplate) {
+                  @let cell = getCellContent(colDef, row);
+                  @if (isTemplate(cell)) {
+                    <ng-container *ngTemplateOutlet="cell; context: { row, colId: colDef.id }">
+                    </ng-container>
+                  } @else if (colDef.cellWrapperClass) {
+                    <span [class]="getCellWrapperClass(colDef, row)">{{ cell }}</span>
+                  } @else {
+                    {{ cell }}
+                  }
+                }
+              </td>
+            }
+          </tr>
+        }
+      </tbody>
+    </table>
+
+    <!-- Sentinel for infinite scroll -->
+    <div #loadMoreSentinel class="infinite-scroll-sentinel">
+      @if (loadingMore()) {
+        <div class="spinner"></div>
+      }
+    </div>
+  </div>
+  @if (totalRows() != undefined) {
+    <div class="table-load-info">Showing {{ data().length }} of {{ totalRows() }}</div>
+  }
+</ccms-card>

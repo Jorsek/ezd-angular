@@ -1,0 +1,19 @@
+@if (hasHeader()) {
+  <header class="header">
+    @if (icon()) {
+      <span class="header-icon">{{ icon() }}</span>
+    }
+    <div class="header-text">
+      @if (titleTemplate(); as tpl) {
+        <ng-container *ngTemplateOutlet="tpl" />
+      } @else if (title()) {
+        <h3 class="header-title">{{ title() }}</h3>
+      }
+      @if (summaryText()) {
+        <p class="header-summary">{{ summaryText() }}</p>
+      }
+    </div>
+  </header>
+}
+
+<ng-content />

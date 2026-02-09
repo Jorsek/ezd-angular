@@ -1,0 +1,49 @@
+<ccms-dialog
+  [title]="title()"
+  [buttons]="buttons()"
+  [showCloseButton]="showCloseButton()"
+  (escapePressed)="onEscapePressed()"
+>
+  @if (mode() === 'confirm-delete') {
+    <p class="save-view-dialog__confirm-text">
+      Are you sure you want to delete the view "<strong>{{ viewName() }}</strong
+      >"? This action cannot be undone.
+    </p>
+  } @else {
+    <p class="save-view-dialog__description">
+      @if (mode() === 'create') {
+        Save your current filter configuration, chart selection, and table columns for easy access
+        later.
+      } @else {
+        Update the name and description for this saved view.
+      }
+    </p>
+    <form class="save-view-dialog__form">
+      <label class="save-view-dialog__field">
+        <span class="save-view-dialog__label">View Name</span>
+        <input
+          type="text"
+          class="save-view-dialog__input"
+          [class.save-view-dialog__input--error]="isDuplicateName()"
+          [value]="viewName()"
+          (input)="onNameInput($event)"
+          placeholder="e.g., Q1 Content Review"
+        />
+        @if (isDuplicateName()) {
+          <span class="save-view-dialog__error">A view with this name already exists</span>
+        }
+      </label>
+
+      <label class="save-view-dialog__field">
+        <span class="save-view-dialog__label">Description (optional)</span>
+        <textarea
+          class="save-view-dialog__textarea"
+          [value]="viewDescription()"
+          (input)="onDescriptionInput($event)"
+          placeholder="e.g., Focus on draft content for Q1 review..."
+          rows="3"
+        ></textarea>
+      </label>
+    </form>
+  }
+</ccms-dialog>

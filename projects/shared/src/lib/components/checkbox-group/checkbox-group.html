@@ -1,0 +1,19 @@
+<div>
+  <div>
+    <label class="title">{{ title() }}</label>
+  </div>
+  <div class="checkbox-group">
+    @for (option of options(); track option.value) {
+      <div class="checkbox-item">
+        <input
+          type="checkbox"
+          id="{{ option.value }}"
+          value="{{ option.value }}"
+          [checked]="isValueSelected(option.value)"
+          (change)="checkboxChange(option.value, $event)"
+        />
+        <label for="{{ option.value }}">{{ option.label }}</label>
+      </div>
+    }
+  </div>
+</div>

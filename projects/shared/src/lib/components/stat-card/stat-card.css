@@ -1,0 +1,65 @@
+:host {
+  display: block;
+}
+
+ccms-card {
+  display: flex;
+  gap: 15px;
+}
+
+.icon {
+  background-color: #eff6ff;
+  border-radius: 6px;
+  justify-content: center;
+  align-items: center;
+  height: 48px;
+  width: 48px;
+  display: flex;
+  flex-shrink: 0;
+}
+
+.icon ccms-icon {
+  color: #235dfc;
+}
+
+.content {
+  flex: 1;
+  min-width: 0;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 16px;
+  color: #4a5566;
+}
+
+.info-icon {
+  color: #6b7280;
+  cursor: help;
+  font-size: 14px;
+}
+
+.value {
+  font-size: 30px;
+  font-weight: 600;
+  color: #333;
+  line-height: normal;
+}
+
+.suffix {
+  font-size: 0.6em;
+  font-weight: 400;
+  margin-left: 4px;
+}
+
+/* Highlight variant */
+:host.highlight ccms-card {
+  border-left: 4px solid #6366f1;
+  padding-left: 32px;
+}
+
+:host.highlight .value {
+  color: #6366f1;
+}

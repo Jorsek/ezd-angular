@@ -1,0 +1,10 @@
+node_modules
+dist
+coverage
+.angular
+*.js
+*.d.ts
+!.*.js
+
+# Auto-generated OpenAPI client
+projects/shared/src/lib/api

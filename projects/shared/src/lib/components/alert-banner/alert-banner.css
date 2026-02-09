@@ -1,0 +1,117 @@
+/* Alert color tokens - can be overridden via CSS custom properties */
+:host {
+  /* Warning (default) */
+  --alert-warning-bg: #fff3cd;
+  --alert-warning-border: #ffc107;
+  --alert-warning-text: #856404;
+
+  /* Error */
+  --alert-error-bg: #f8d7da;
+  --alert-error-border: #f5c6cb;
+  --alert-error-text: #721c24;
+
+  /* Info */
+  --alert-info-bg: #d1ecf1;
+  --alert-info-border: #bee5eb;
+  --alert-info-text: #0c5460;
+
+  /* Success */
+  --alert-success-bg: #d4edda;
+  --alert-success-border: #c3e6cb;
+  --alert-success-text: #155724;
+
+  /* Base styles */
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 4px;
+  border-width: 1px;
+  border-style: solid;
+}
+
+/* Type variants */
+:host(.ccms-alert-banner--warning) {
+  background-color: var(--alert-warning-bg);
+  border-color: var(--alert-warning-border);
+  color: var(--alert-warning-text);
+}
+
+:host(.ccms-alert-banner--error) {
+  background-color: var(--alert-error-bg);
+  border-color: var(--alert-error-border);
+  color: var(--alert-error-text);
+}
+
+:host(.ccms-alert-banner--info) {
+  background-color: var(--alert-info-bg);
+  border-color: var(--alert-info-border);
+  color: var(--alert-info-text);
+}
+
+:host(.ccms-alert-banner--success) {
+  background-color: var(--alert-success-bg);
+  border-color: var(--alert-success-border);
+  color: var(--alert-success-text);
+}
+
+.ccms-alert-banner__icon {
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.ccms-alert-banner__message {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.ccms-alert-banner__hint {
+  font-size: 13px;
+  opacity: 0.8;
+}
+
+.ccms-alert-banner__retry {
+  margin-left: auto;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  background-color: transparent;
+  border: 1px solid currentColor;
+  border-radius: 4px;
+  color: inherit;
+  cursor: pointer;
+  transition:
+    background-color 0.15s,
+    color 0.15s;
+}
+
+.ccms-alert-banner__retry:hover {
+  background-color: currentColor;
+  color: white;
+}
+
+/* Fix hover text color for each type */
+:host(.ccms-alert-banner--warning) .ccms-alert-banner__retry:hover {
+  background-color: var(--alert-warning-text);
+  color: white;
+}
+
+:host(.ccms-alert-banner--error) .ccms-alert-banner__retry:hover {
+  background-color: var(--alert-error-text);
+  color: white;
+}
+
+:host(.ccms-alert-banner--info) .ccms-alert-banner__retry:hover {
+  background-color: var(--alert-info-text);
+  color: white;
+}
+
+:host(.ccms-alert-banner--success) .ccms-alert-banner__retry:hover {
+  background-color: var(--alert-success-text);
+  color: white;
+}
+
+.ccms-alert-banner__retry:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px currentColor;
+}

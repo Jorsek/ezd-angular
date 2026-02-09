@@ -1,0 +1,10 @@
+<div class="progress-section" role="status" aria-live="polite">
+  <div class="progress-bar-container">
+    <div class="progress-bar" [style.width.%]="progressPercent()"></div>
+  </div>
+  <p class="progress-text">
+    Processed {{ resourcesProcessed() }} of {{ totalResources() }} resources - Found
+    {{ matchesFound() }} matches
+  </p>
+  <button type="button" (click)="onStopClick()" class="stop-button">Stop Search</button>
+</div>

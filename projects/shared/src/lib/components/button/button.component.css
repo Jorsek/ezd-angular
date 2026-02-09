@@ -1,0 +1,72 @@
+/**
+ * Button component styles
+ * Uses scoped styles with ViewEncapsulation for isolation
+ * Follows WCAG AA standards for color contrast
+ */
+
+.button {
+  /* Reset default button styles */
+  border: none;
+  margin: 0;
+  padding: 12px 24px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.5;
+  text-align: center;
+  text-decoration: none;
+  transition: all 0.2s ease-in-out;
+  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px; /* WCAG touch target size */
+  min-width: 44px;
+}
+
+.button:focus-visible {
+  outline: 2px solid #005fcc;
+  outline-offset: 2px;
+}
+
+/* Primary variant */
+.button--primary {
+  background-color: #0070f3;
+  color: #ffffff;
+}
+
+.button--primary:hover:not(:disabled) {
+  background-color: #005fcc;
+}
+
+.button--primary:active:not(:disabled) {
+  background-color: #004a99;
+}
+
+/* Secondary variant */
+.button--secondary {
+  background-color: #f0f0f0;
+  color: #333333;
+  border: 1px solid #cccccc;
+}
+
+.button--secondary:hover:not(:disabled) {
+  background-color: #e0e0e0;
+}
+
+.button--secondary:active:not(:disabled) {
+  background-color: #d0d0d0;
+}
+
+/* Disabled state */
+.button--disabled,
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.button__label {
+  display: inline-block;
+}

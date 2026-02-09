@@ -1,0 +1,60 @@
+/* Host element layout */
+ccms-callout-section {
+  display: block;
+}
+
+/* Wrapper for highlighted + grid */
+ccms-callout-section .callouts {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Highlighted callout - full width */
+ccms-callout-section .highlighted {
+  width: 100%;
+}
+
+/* Grid of regular callouts - flexible with max 22% per item */
+ccms-callout-section .grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+ccms-callout-section .grid > * {
+  flex: 1 1 auto;
+  max-width: 22%;
+  min-width: 150px;
+}
+
+/* Four-column grid variant */
+ccms-callout-section.four-column .grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  align-items: stretch;
+  justify-items: stretch;
+}
+
+ccms-callout-section.four-column .grid > ccms-stat-card {
+  max-width: none;
+  min-width: auto;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* No data state */
+ccms-callout-section .no-data {
+  padding: 24px;
+  text-align: center;
+  background: #f9fafb;
+  border-radius: 8px;
+  border: 1px dashed #d1d5db;
+}
+
+ccms-callout-section .no-data-text {
+  margin: 0;
+  font-size: 0.875rem;
+  color: #6b7280;
+}

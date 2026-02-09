@@ -1,0 +1,63 @@
+ccms-folder-insights-display {
+  padding: 16px 0;
+  display: flex;
+  flex-direction: column;
+}
+
+ccms-folder-insights-display ccms-callout-section {
+  margin-bottom: 24px;
+}
+
+/* Override callout grid to 2 columns for the compact drawer layout */
+ccms-folder-insights-display ccms-callout-section .grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+ccms-folder-insights-display ccms-callout-section .grid > * {
+  max-width: none;
+  min-width: auto;
+}
+
+/* Breakdown Section */
+ccms-folder-insights-display .breakdown-section {
+  padding-top: 16px;
+  border-top: 1px solid #e0e0e0;
+}
+
+ccms-folder-insights-display .breakdown-list {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+ccms-folder-insights-display .breakdown-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+ccms-folder-insights-display .breakdown-item:last-child {
+  border-bottom: none;
+}
+
+ccms-folder-insights-display .breakdown-label {
+  font-size: 13px;
+  color: #777;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+ccms-folder-insights-display .breakdown-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+  background-color: #f0f0f0;
+  padding: 4px 10px;
+  border-radius: 6px;
+}

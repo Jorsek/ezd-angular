@@ -1,0 +1,64 @@
+<ccms-filter
+  [label]="label()"
+  [expandable]="true"
+  [removable]="removable()"
+  (removed)="removed.emit()"
+  [ccmsPopupMenuTrigger]="menu"
+>
+  <span class="filter-value">{{ displayValue() }}</span>
+
+  <ccms-popup-menu
+    #menu
+    [multiSelect]="true"
+    [selectedValues]="selectedValues()"
+    (selectionChange)="onSelectionChange($event)"
+  >
+    @if (showSearch()) {
+      <div class="filter-menu-search">
+        <input
+          type="text"
+          class="filter-menu-search__input"
+          placeholder="Search..."
+          (input)="onSearch($event)"
+        />
+      </div>
+    }
+
+    <ccms-popup-menu-item [selectAll]="true" (selected)="onSelectAll($event)"
+      >All</ccms-popup-menu-item
+    >
+
+    @if (hasOptionsError()) {
+      <ccms-popup-menu-item [disabled]="true" class="filter-menu-error"
+        >Failed to load options</ccms-popup-menu-item
+      >
+    } @else if (optionsSignal().length > 0) {
+      @for (item of flattenedOptions(); track item.option.value) {
+        @if (hasChildren(item)) {
+          <!-- Parent node with cascade selection -->
+          <ccms-popup-menu-item
+            [value]="item.option.value"
+            [title]="item.option.label"
+            [indeterminate]="getSelectionState(item) === 'some'"
+            [preventDefaultToggle]="true"
+            [style.padding-left.px]="16 + item.depth * 16"
+            (selected)="onParentClick(item)"
+          >
+            {{ item.option.label }}
+          </ccms-popup-menu-item>
+        } @else {
+          <!-- Leaf node -->
+          <ccms-popup-menu-item
+            [value]="item.option.value"
+            [title]="item.option.label"
+            [style.padding-left.px]="16 + item.depth * 16"
+          >
+            {{ item.option.label }}
+          </ccms-popup-menu-item>
+        }
+      }
+    } @else {
+      <ccms-popup-menu-item [disabled]="true">Loading...</ccms-popup-menu-item>
+    }
+  </ccms-popup-menu>
+</ccms-filter>

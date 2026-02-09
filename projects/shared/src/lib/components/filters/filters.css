@@ -1,0 +1,373 @@
+/**
+ * Shared styles for filter components
+ *
+ * CSS Custom Properties (with defaults):
+ *
+ * Filter Chip Variables:
+ * --filter-bg:              Background color (default: #fff)
+ * --filter-bg-hover:        Background on hover (default: #f5f5f5)
+ * --filter-bg-active:       Background when open/pressed (default: #e8e8e8)
+ * --filter-bg-focus:        Background when focused (default: #fff)
+ * --filter-border:          Border color (default: #e0e0e0)
+ * --filter-border-focus:    Border color when focused/active (default: #1a73e8)
+ * --filter-text:            Primary text color (default: #333)
+ * --filter-text-secondary:  Secondary text color - labels, icons (default: #666)
+ * --filter-text-muted:      Muted text - placeholders, group headers (default: #888)
+ * --filter-text-placeholder: Placeholder text (default: #999)
+ * --filter-radius:          Border radius (default: 6px)
+ * --filter-font-size:       Base font size (default: 14px)
+ *
+ * Filter Menu Variables (mapped to popup menu):
+ * --filter-menu-background:      Menu background (default: #fff)
+ * --filter-menu-border:          Menu border color (default: #e0e0e0)
+ * --filter-menu-radius:          Menu border radius (default: 4px)
+ * --filter-menu-shadow:          Menu box shadow (default: 0 2px 8px rgba(0,0,0,0.15))
+ * --filter-menu-item-color:      Menu item text color (default: #333)
+ * --filter-menu-item-hover:      Menu item hover background (default: #f8f9fa)
+ * --filter-menu-item-selected:   Menu item selected background (default: #e3f2fd)
+ * --filter-menu-item-disabled:   Menu item disabled color (default: #9e9e9e)
+ * --filter-menu-focus:           Menu focus ring color (default: #1a73e8)
+ */
+
+/* ============================================
+   Root: Filter menu to popup menu variable mapping
+   ============================================ */
+
+ccms-filter {
+  --popup-menu-background: var(--filter-menu-background, #fff);
+  --popup-menu-border: 1px solid var(--filter-menu-border, #e0e0e0);
+  --popup-menu-border-radius: var(--filter-menu-radius, 4px);
+  --popup-menu-box-shadow: var(--filter-menu-shadow, 0 2px 8px rgba(0, 0, 0, 0.15));
+  --popup-menu-item-color: var(--filter-menu-item-color, #333);
+  --popup-menu-item-font-size: var(--filter-font-size, 14px);
+  --popup-menu-item-hover-background: var(--filter-menu-item-hover, #f8f9fa);
+  --popup-menu-item-selected-background: var(--filter-menu-item-selected, #e3f2fd);
+  --popup-menu-item-disabled-color: var(--filter-menu-item-disabled, #9e9e9e);
+  --popup-menu-focus-color: var(--filter-menu-focus, #1a73e8);
+}
+
+/* ============================================
+   Filter Chip - ccms-filter element
+   ============================================ */
+
+ccms-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background-color: var(--filter-bg, #fff);
+  border: 1px solid var(--filter-border, #e0e0e0);
+  border-radius: var(--filter-radius, 6px);
+  font-size: var(--filter-font-size, 14px);
+  line-height: 1.2;
+  cursor: default;
+}
+
+ccms-filter:hover {
+  background-color: var(--filter-bg-hover, #f5f5f5);
+}
+
+ccms-filter:focus-within {
+  border-color: var(--filter-border-focus, #1a73e8);
+  background-color: var(--filter-bg-focus, #fff);
+}
+
+/* Expandable filters (dropdowns) should show pointer cursor */
+ccms-filter[ccmspopupmenutrigger] {
+  cursor: pointer;
+}
+
+/* Open state - when dropdown is expanded */
+ccms-filter.open {
+  background-color: var(--filter-bg-active, #e8e8e8);
+  border-color: var(--filter-border-focus, #1a73e8);
+}
+
+ccms-filter.open .filter-chevron {
+  transform: rotate(180deg);
+}
+
+/* ============================================
+   Filter Content
+   ============================================ */
+
+.filter-label {
+  color: var(--filter-text-secondary, #666);
+  white-space: nowrap;
+}
+
+.filter-value {
+  color: var(--filter-text, #333);
+  font-weight: 500;
+}
+
+.filter-chevron {
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 5px solid var(--filter-text-secondary, #666);
+  transition: transform 0.15s ease-out;
+}
+
+/* ============================================
+   Filter Remove Button
+   ============================================ */
+
+.filter-remove {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  margin-left: 2px;
+  margin-right: -4px;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.filter-remove:hover {
+  background-color: rgba(0, 0, 0, 0.08);
+}
+
+.filter-remove::before,
+.filter-remove::after {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 1.5px;
+  background-color: var(--filter-text-muted, #888);
+}
+
+.filter-remove::before {
+  transform: rotate(45deg);
+}
+
+.filter-remove::after {
+  transform: rotate(-45deg);
+}
+
+.filter-remove:hover::before,
+.filter-remove:hover::after {
+  background-color: var(--filter-text, #333);
+}
+
+/* ============================================
+   Filter Input - Inline text input
+   ============================================ */
+
+.filter-input {
+  border: none;
+  background: transparent;
+  padding: 0;
+  font-size: var(--filter-font-size, 14px);
+  min-width: 120px;
+  color: var(--filter-text, #333);
+}
+
+.filter-input:focus {
+  outline: none;
+}
+
+.filter-input::placeholder {
+  color: var(--filter-text-placeholder, #999);
+}
+
+.filter-input--range {
+  min-width: 70px;
+  width: 80px;
+}
+
+.filter-range-separator {
+  color: var(--filter-text-muted, #888);
+  margin: 0 2px;
+}
+
+/* ============================================
+   Filter Menu Search - Search box inside dropdowns
+   ============================================ */
+
+.filter-menu-search {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--filter-border, #e0e0e0);
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+.filter-menu-search__input {
+  width: 100%;
+  max-width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--filter-border, #e0e0e0);
+  border-radius: 4px;
+  font-size: var(--filter-font-size, 14px);
+  box-sizing: border-box;
+}
+
+.filter-menu-search__input:focus {
+  outline: none;
+  border-color: var(--filter-border-focus, #1a73e8);
+}
+
+/* ============================================
+   Taxonomy Filter Menu - Wider menu for hierarchical options
+   ============================================ */
+
+ccms-taxonomy-filter ccms-popup-menu.open {
+  width: max-content;
+  min-width: 200px;
+  max-width: min(400px, 90vw);
+}
+
+/* ============================================
+   Filter Option Group - Hierarchical options
+   ============================================ */
+
+.filter-option-group {
+  border-top: 1px solid var(--filter-border, #e0e0e0);
+  margin-top: 4px;
+}
+
+.filter-option-group:first-of-type {
+  border-top: none;
+  margin-top: 0;
+}
+
+.filter-option-group__header {
+  padding: 12px 16px 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--filter-text-muted, #888);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.filter-option-group__items {
+  padding-left: 12px;
+}
+
+/* ============================================
+   Filter Search - Standalone search box
+   ============================================ */
+
+.filter-search {
+  display: inline-flex;
+  align-items: center;
+  background-color: var(--filter-bg, #fff);
+  border: 1px solid var(--filter-border, #e0e0e0);
+  border-radius: var(--filter-radius, 6px);
+  font-size: var(--filter-font-size, 14px);
+  width: 240px;
+}
+
+.filter-search:hover {
+  background-color: var(--filter-bg-hover, #f5f5f5);
+}
+
+.filter-search:focus-within {
+  border-color: var(--filter-border-focus, #1a73e8);
+  background-color: var(--filter-bg-focus, #fff);
+}
+
+/* Magnifying glass icon */
+.filter-search__icon {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  margin-left: 12px;
+  color: var(--filter-text-secondary, #666);
+}
+
+.filter-search__icon::before {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border: 2px solid var(--filter-text-muted, #888);
+  border-radius: 50%;
+}
+
+.filter-search__icon::after {
+  content: '';
+  position: absolute;
+  width: 2px;
+  height: 6px;
+  background-color: var(--filter-text-muted, #888);
+  transform: rotate(-45deg);
+  top: 10px;
+  left: 10px;
+}
+
+.filter-search__input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 8px;
+  font-size: var(--filter-font-size, 14px);
+  min-width: 120px;
+  color: var(--filter-text, #333);
+}
+
+.filter-search__input:focus {
+  outline: none;
+}
+
+.filter-search__input::placeholder {
+  color: var(--filter-text-placeholder, #999);
+}
+
+/* Hide native search clear button - we provide our own */
+.filter-search__input::-webkit-search-cancel-button {
+  display: none;
+}
+
+.filter-search__clear {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  margin-right: 4px;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.filter-search__clear--visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.filter-search__clear--visible:hover {
+  background-color: rgba(0, 0, 0, 0.08);
+}
+
+.filter-search__clear::before,
+.filter-search__clear::after {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 1.5px;
+  background-color: var(--filter-text-muted, #888);
+}
+
+.filter-search__clear::before {
+  transform: rotate(45deg);
+}
+
+.filter-search__clear::after {
+  transform: rotate(-45deg);
+}
+
+.filter-search__clear--visible:hover::before,
+.filter-search__clear--visible:hover::after {
+  background-color: var(--filter-text, #333);
+}

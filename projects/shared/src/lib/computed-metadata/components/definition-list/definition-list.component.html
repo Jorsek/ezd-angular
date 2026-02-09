@@ -1,0 +1,222 @@
+<div class="definition-list">
+  @if (definitions().length === 0) {
+    <div class="empty-state">
+      <p>No definitions configured.</p>
+      <p class="hint">Create a definition to start extracting metadata from DITA content.</p>
+    </div>
+  } @else {
+    <table class="definitions-table" #definitionsTable aria-label="Extracted metadata definitions">
+      <thead>
+        <tr>
+          <th scope="col" class="drag-column"><span class="visually-hidden">Reorder</span></th>
+          <th scope="col">Field Name</th>
+          <th scope="col">Data Type</th>
+          <th scope="col">Multi-Value</th>
+          <th scope="col" class="default-column">Default</th>
+          <th scope="col"><span class="visually-hidden">Actions</span></th>
+        </tr>
+      </thead>
+      <tbody cdkDropList (cdkDropListDropped)="onDrop($event)">
+        @for (definition of definitions(); track definition.id) {
+          <tr
+            cdkDrag
+            [cdkDragData]="definition"
+            [cdkDragConstrainPosition]="constrainPosition"
+            [class.recomputing]="recomputingId() === definition.id"
+          >
+            <ng-template cdkDragPreview matchSize>
+              <table class="drag-preview-table" [style.width.px]="tableWidth">
+                <tr>
+                  <td class="drag-cell" [style.width.px]="columnWidths[0]">
+                    <span class="drag-handle">
+                      <svg viewBox="0 0 24 24" fill="currentColor">
+                        <circle cx="8" cy="5" r="1.5" />
+                        <circle cx="16" cy="5" r="1.5" />
+                        <circle cx="8" cy="12" r="1.5" />
+                        <circle cx="16" cy="12" r="1.5" />
+                        <circle cx="8" cy="19" r="1.5" />
+                        <circle cx="16" cy="19" r="1.5" />
+                      </svg>
+                    </span>
+                  </td>
+                  <td class="field-name-cell" [style.width.px]="columnWidths[1]">
+                    <div class="field-name-content">
+                      <div class="field-name-text">
+                        <span class="definition-name">{{ definition.name }}</span>
+                        <span class="definition-key">{{ definition.key }}</span>
+                      </div>
+                      <span class="xpath-count-wrapper">
+                        <span class="xpath-count"
+                          >{{ definition.xpaths.length }} XPath{{
+                            definition.xpaths.length !== 1 ? 's' : ''
+                          }}</span
+                        >
+                      </span>
+                    </div>
+                  </td>
+                  <td [style.width.px]="columnWidths[2]">
+                    <span class="pill pill-type">{{ dataTypeLabels[definition.dataType] }}</span>
+                  </td>
+                  <td [style.width.px]="columnWidths[3]">
+                    @if (definition.multiValue) {
+                      <span class="pill pill-multi">Multi-Value</span>
+                    }
+                  </td>
+                  <td class="default-column" [style.width.px]="columnWidths[4]">
+                    {{ definition.defaultValue ? '"' + definition.defaultValue + '"' : '—' }}
+                  </td>
+                  <td class="actions-cell" [style.width.px]="columnWidths[5]">
+                    <button type="button" class="icon-btn edit-btn" disabled>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                      </svg>
+                    </button>
+                    <button type="button" class="icon-btn delete-btn" disabled>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6" />
+                        <path
+                          d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+                        />
+                        <line x1="10" y1="11" x2="10" y2="17" />
+                        <line x1="14" y1="11" x2="14" y2="17" />
+                      </svg>
+                    </button>
+                    <button type="button" class="icon-btn recompute-btn" disabled>
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M23 4v6h-6" />
+                        <path d="M1 20v-6h6" />
+                        <path
+                          d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"
+                        />
+                      </svg>
+                    </button>
+                  </td>
+                </tr>
+              </table>
+            </ng-template>
+            <td class="drag-cell">
+              <span class="drag-handle" cdkDragHandle aria-label="Drag to reorder">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <circle cx="8" cy="5" r="1.5" />
+                  <circle cx="16" cy="5" r="1.5" />
+                  <circle cx="8" cy="12" r="1.5" />
+                  <circle cx="16" cy="12" r="1.5" />
+                  <circle cx="8" cy="19" r="1.5" />
+                  <circle cx="16" cy="19" r="1.5" />
+                </svg>
+              </span>
+            </td>
+            <td class="field-name-cell">
+              <div class="field-name-content">
+                <div class="field-name-text">
+                  <span class="definition-name">{{ definition.name }}</span>
+                  <span class="definition-key">{{ definition.key }}</span>
+                </div>
+                <span class="xpath-count-wrapper">
+                  <span class="xpath-count"
+                    >{{ definition.xpaths.length }} XPath{{
+                      definition.xpaths.length !== 1 ? 's' : ''
+                    }}</span
+                  >
+                  <div class="xpath-tooltip">
+                    @for (xpath of definition.xpaths; track xpath; let i = $index) {
+                      <div class="xpath-item">{{ i + 1 }}. {{ xpath }}</div>
+                    }
+                  </div>
+                </span>
+              </div>
+            </td>
+            <td>
+              <span class="pill pill-type">{{ dataTypeLabels[definition.dataType] }}</span>
+            </td>
+            <td>
+              @if (definition.multiValue) {
+                <span class="pill pill-multi">Multi-Value</span>
+              }
+            </td>
+            <td class="default-column">
+              {{ definition.defaultValue ? '"' + definition.defaultValue + '"' : '—' }}
+            </td>
+            <td class="actions-cell">
+              <span class="action-btn-wrapper">
+                <button
+                  type="button"
+                  class="icon-btn edit-btn"
+                  aria-label="Edit {{ definition.name }}"
+                  (click)="onEdit($event, definition)"
+                  [disabled]="recomputingId() === definition.id"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                  </svg>
+                </button>
+                <span class="action-tooltip">Edit Field</span>
+              </span>
+              <span class="action-btn-wrapper">
+                <button
+                  type="button"
+                  class="icon-btn delete-btn"
+                  aria-label="Delete {{ definition.name }}"
+                  (click)="onDelete($event, definition)"
+                  [disabled]="recomputingId() === definition.id"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="3 6 5 6 21 6" />
+                    <path
+                      d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+                    />
+                    <line x1="10" y1="11" x2="10" y2="17" />
+                    <line x1="14" y1="11" x2="14" y2="17" />
+                  </svg>
+                </button>
+                <span class="action-tooltip">Delete Field</span>
+              </span>
+              @if (recomputingId() === definition.id) {
+                <span class="recompute-progress-text">
+                  @if (!recomputeProgress()) {
+                    0%
+                  } @else if (recomputeProgress()?.type === 'complete') {
+                    Done!
+                    @if (recomputeProgress()?.failed) {
+                      ({{ recomputeProgress()?.failed }} failed)
+                    }
+                  } @else if (recomputeProgress()?.type === 'start') {
+                    0%
+                  } @else {
+                    {{ progressPercent() }}%
+                  }
+                </span>
+              } @else {
+                <span class="recompute-btn-wrapper">
+                  <button
+                    type="button"
+                    class="icon-btn recompute-btn"
+                    aria-label="Reprocess all field values for {{ definition.name }}"
+                    (click)="onRecompute($event, definition)"
+                  >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M23 4v6h-6" />
+                      <path d="M1 20v-6h6" />
+                      <path
+                        d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"
+                      />
+                    </svg>
+                  </button>
+                  <span class="recompute-tooltip">
+                    <strong>Reprocess all field values</strong>
+                    <span
+                      >Values are automatically updated when files are saved or fields are edited.
+                      Use this to manually reprocess all content if needed.</span
+                    >
+                  </span>
+                </span>
+              }
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</div>

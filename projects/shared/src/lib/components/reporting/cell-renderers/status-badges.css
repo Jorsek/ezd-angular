@@ -1,0 +1,100 @@
+/**
+ * Shared status badge styles
+ * Used by StatusCellComponent and available for rich-table cellWrapperClass
+ */
+
+.status {
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  display: inline-block;
+}
+
+/* Localization statuses */
+.status.current,
+.status.Current {
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid rgba(21, 87, 36, 0.5);
+}
+
+.status.outdated,
+.status.Out-of-date {
+  background: #fff3cd;
+  color: #856404;
+  border: 1px solid rgba(133, 100, 4, 0.5);
+}
+
+.status.missing,
+.status.Missing {
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid rgba(114, 28, 36, 0.5);
+}
+
+/* File statuses */
+.status.in-progress,
+.status.in_progress {
+  background: #d0e0ff;
+  color: #0000ff;
+  border: 1px solid rgba(0, 0, 255, 0.5);
+}
+
+.status.on-hold,
+.status.on_hold {
+  background: #f0f0f0;
+  color: #666666;
+  border: 1px solid rgba(150, 150, 150, 0.5);
+}
+
+.status.in-review,
+.status.in_review {
+  background: #ffe8b3;
+  color: #ffa500;
+  border: 1px solid rgba(255, 165, 0, 0.5);
+}
+
+.status.approved {
+  background: #d4edda;
+  color: #008000;
+  border: 1px solid rgba(0, 128, 0, 0.5);
+}
+
+.status.needs-reevaluation,
+.status.needs_reevaluation {
+  background: #ffffcc;
+  color: #b3b300;
+  border: 1px solid rgba(180, 180, 0, 0.5);
+}
+
+.status.obsoleted {
+  background: #f8d7da;
+  color: #cc0000;
+  border: 1px solid rgba(204, 0, 0, 0.5);
+}
+
+.status.authoring {
+  background: #e3e7eb;
+  color: #333f4f;
+  border: 1px solid rgba(51, 63, 79, 0.5);
+}
+
+.status.draft {
+  background: #e3e7eb;
+  color: #333f4f;
+  border: 1px solid rgba(51, 63, 79, 0.5);
+}
+
+.status.published {
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid rgba(21, 87, 36, 0.5);
+}
+
+.status.localized {
+  background: #d0e0ff;
+  color: #004085;
+  border: 1px solid rgba(0, 64, 133, 0.5);
+}

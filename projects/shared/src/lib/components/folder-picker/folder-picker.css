@@ -1,0 +1,85 @@
+@font-face {
+  font-family: 'easyDITA-Font';
+  src:
+    url('/assets/fonts/easyDITA-Font.woff') format('woff'),
+    url('/assets/fonts/easyDITA-Font.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
+}
+
+:host {
+  display: block;
+}
+
+.folder-picker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border: 1px solid var(--border-color, #ccc);
+  border-radius: 4px;
+  background: var(--surface-bg, #fff);
+}
+
+.folder-picker.disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.folder-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  min-width: 0;
+  cursor: pointer;
+}
+
+.ji-Folder {
+  font-family: 'easyDITA-Font' !important;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 18px;
+  line-height: 1;
+  flex-shrink: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+.ji-Folder::before {
+  content: '\e986';
+  color: var(--icon-color, #666);
+}
+
+.folder-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.875rem;
+}
+
+.folder-name.placeholder {
+  color: var(--text-secondary, #999);
+  font-style: italic;
+}
+
+.browse-button {
+  padding: 4px 12px;
+  border: 1px solid var(--border-color, #ccc);
+  border-radius: 4px;
+  background: var(--button-bg, #f5f5f5);
+  cursor: pointer;
+  font-size: 0.8125rem;
+}
+
+.browse-button:hover:not(:disabled) {
+  background: var(--button-hover-bg, #e8e8e8);
+}
+
+.browse-button:disabled {
+  cursor: not-allowed;
+}

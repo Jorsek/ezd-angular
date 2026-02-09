@@ -1,0 +1,23 @@
+@if (isLoading()) {
+  <div class="skeleton-container">
+    <div class="skeleton-grid">
+      <ccms-skeleton variant="card" />
+      <ccms-skeleton variant="card" />
+    </div>
+    <div class="skeleton-breakdown">
+      @for (_ of [1, 2, 3, 4]; track $index) {
+        <div class="skeleton-row">
+          <ccms-skeleton variant="text" />
+          <ccms-skeleton variant="badge" width="48px" />
+        </div>
+      }
+    </div>
+  </div>
+} @else if (error()) {
+  <div class="error-state">
+    <i class="ji-Error"></i>
+    <p>{{ error() }}</p>
+  </div>
+} @else if (data()) {
+  <ccms-folder-insights-display [data]="data()!" />
+}

@@ -1,0 +1,17 @@
+<div class="data-type-grid">
+  @for (option of options; track option.value) {
+    <button
+      #radioBtn
+      type="button"
+      class="data-type-btn"
+      [class.selected]="isSelected()(option.value)"
+      role="radio"
+      [attr.aria-checked]="isSelected()(option.value)"
+      [attr.tabindex]="isSelected()(option.value) ? 0 : -1"
+      (click)="selectType(option.value)"
+      (keydown)="handleKeydown($event, option.value)"
+    >
+      {{ option.label }}
+    </button>
+  }
+</div>

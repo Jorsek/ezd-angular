@@ -1,0 +1,25 @@
+<ccms-card>
+  @if (icon()) {
+    <div class="icon">
+      <ccms-icon [name]="icon()!" [size]="24" />
+    </div>
+  }
+  <div class="content">
+    <div class="header">
+      <span>{{ label() }}</span>
+      @if (info()) {
+        <span class="info-icon" [title]="info()">ⓘ</span>
+      }
+    </div>
+    <div class="value">
+      @if (compact()) {
+        {{ value() | compactNumber: 1 : compactThreshold() }}
+      } @else {
+        {{ value() | numberOrText }}
+      }
+      @if (suffix()) {
+        <span class="suffix">{{ suffix() }}</span>
+      }
+    </div>
+  </div>
+</ccms-card>

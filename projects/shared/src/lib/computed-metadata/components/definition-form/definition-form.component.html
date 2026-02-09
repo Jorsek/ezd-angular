@@ -1,0 +1,140 @@
+<div class="definition-form-container">
+  <form class="definition-form" [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="form-layout">
+      <!-- Left Column: Form Fields -->
+      <div class="form-column">
+        <div class="form-fields">
+          <h3 class="form-title">{{ formTitle() }}</h3>
+
+          <div class="form-group">
+            <label for="name" class="form-label"
+              >Display Name <span class="required">*</span></label
+            >
+            <input
+              type="text"
+              id="name"
+              class="form-input"
+              formControlName="name"
+              placeholder="e.g., Author, Document Title, Category"
+              [attr.aria-invalid]="form.get('name')?.invalid && form.get('name')?.touched"
+            />
+            <p class="form-hint">Human-readable display name for this metadata field</p>
+          </div>
+
+          <div class="form-group">
+            <label for="key" class="form-label">Field Name <span class="required">*</span></label>
+            <input
+              type="text"
+              id="key"
+              class="form-input"
+              formControlName="key"
+              placeholder="e.g., author, document-title, category"
+              (input)="onKeyInput()"
+              [attr.aria-invalid]="form.get('key')?.invalid && form.get('key')?.touched"
+            />
+            <p class="form-hint">{{ keyHintText() }}</p>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Data Type</label>
+            <ccms-data-type-selector [(value)]="dataType" />
+          </div>
+
+          <div class="form-group form-group-inline">
+            <label class="checkbox-label">
+              <input type="checkbox" formControlName="multiValue" />
+              <span>Multi-value</span>
+            </label>
+            <p class="form-hint">Allow multiple values for this field</p>
+          </div>
+
+          <div class="form-group">
+            <label for="defaultValue" class="form-label">Default Value</label>
+            <input
+              type="text"
+              id="defaultValue"
+              class="form-input"
+              formControlName="defaultValue"
+              placeholder="e.g., Unknown, N/A"
+            />
+            <p class="form-hint">Used when no XPath expression matches</p>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">XPath Expressions <span class="required">*</span></label>
+            <p class="form-hint">Evaluated in order; first match wins</p>
+
+            <div class="xpath-list" formArrayName="xpaths">
+              @for (control of xpathControls.controls; track $index; let i = $index) {
+                <div class="xpath-row-container">
+                  <div class="xpath-row">
+                    <input
+                      type="text"
+                      class="form-input xpath-input"
+                      [formControlName]="i"
+                      placeholder="e.g., //author/text()"
+                      [attr.aria-label]="'XPath expression ' + (i + 1)"
+                      [attr.aria-invalid]="xpathErrors().has(i)"
+                      [attr.aria-describedby]="xpathErrors().has(i) ? 'xpath-error-' + i : null"
+                      (input)="onXpathInput(i)"
+                    />
+                    <button
+                      type="button"
+                      class="remove-xpath-btn"
+                      (click)="removeXpath(i)"
+                      [disabled]="xpathControls.length <= 1"
+                      aria-label="Remove XPath"
+                      title="Remove XPath"
+                    >
+                      &times;
+                    </button>
+                  </div>
+                  @if (xpathErrors().get(i); as errorMsg) {
+                    <p class="xpath-error" [id]="'xpath-error-' + i" role="alert">{{ errorMsg }}</p>
+                  }
+                </div>
+              }
+            </div>
+
+            <button
+              type="button"
+              class="add-xpath-btn"
+              (click)="addXpath()"
+              [disabled]="!canAddMoreXpaths()"
+              [title]="canAddMoreXpaths() ? 'Add XPath expression' : 'Maximum 5 XPath expressions'"
+            >
+              + Add XPath
+            </button>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="onCancel()"
+            [disabled]="isSubmitting()"
+          >
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-primary" [disabled]="!isValid() || isSubmitting()">
+            @if (isSubmitting()) {
+              Saving...
+            } @else {
+              {{ isEditMode() ? 'Update' : 'Create' }}
+            }
+          </button>
+        </div>
+      </div>
+
+      <!-- Right Column: Preview Panel -->
+      <div class="preview-column">
+        <ccms-xpath-preview-panel
+          [xpaths]="currentXpaths()"
+          [defaultValue]="currentDefaultValue()"
+          (xpathError)="onXpathValidationError($event)"
+        />
+      </div>
+    </div>
+  </form>
+</div>

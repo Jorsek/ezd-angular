@@ -1,0 +1,105 @@
+<div class="charts" cdkDropList cdkDropListSortingDisabled (cdkDropListDropped)="onDrop($event)">
+  @for (
+    item of gridItems();
+    track item.type === 'chart'
+      ? item.chart.id + '-' + (item.chart.config?.width ?? 1)
+      : 'gap-' + $index
+  ) {
+    @if (item.type === 'chart') {
+      <ccms-card
+        class="chart-card"
+        [class.chart-card-width-1]="item.chart.config.width === 1"
+        [class.chart-card-width-2]="item.chart.config.width === 2"
+        [class.chart-card-width-3]="item.chart.config.width === 3"
+        [class.chart-card-width-4]="item.chart.config.width === 4"
+        [class.chart-card-height-1]="(item.chart.config.height ?? 1) === 1"
+        [class.chart-card-height-2]="item.chart.config.height === 2"
+        [class.drop-indicator-before]="
+          dropIndicatorIndex() === item.index && dropIndicatorSide() === 'before'
+        "
+        [class.drop-indicator-after]="
+          dropIndicatorIndex() === item.index && dropIndicatorSide() === 'after'
+        "
+        cdkDrag
+        [cdkDragData]="item.index"
+        [cdkDragDisabled]="!editable()"
+        (cdkDragMoved)="onDragMove($event)"
+        (cdkDragEnded)="onDragEnded()"
+      >
+        @if (editable()) {
+          <div class="chart-actions">
+            <button
+              type="button"
+              class="chart-action-btn"
+              aria-label="Configure chart"
+              (click)="onConfigureChart(item.chart)"
+            >
+              <ccms-icon name="settings" />
+            </button>
+            <button
+              type="button"
+              class="chart-action-btn chart-action-btn-danger"
+              aria-label="Delete chart"
+              (click)="onDeleteChart(item.chart)"
+            >
+              <ccms-icon name="delete" />
+            </button>
+            <div
+              class="drag-handle"
+              cdkDragHandle
+              tabindex="0"
+              role="button"
+              aria-label="Reorder chart. Use arrow keys to move."
+              (keydown)="onDragHandleKeydown($event, item.index)"
+            >
+              <ccms-icon name="drag-handle" [size]="18" />
+            </div>
+          </div>
+        }
+        @if (item.chart.config.chartType === ChartType.Pie) {
+          <ccms-pie-chart
+            [data]="item.chart.data"
+            [title]="item.chart.config.title"
+            [description]="item.chart.config.description"
+            [showLabels]="false"
+            [limitResults]="item.chart.config.limitResults"
+            [colorMap]="item.chart.colorMap"
+          />
+        } @else {
+          <ccms-bar-chart
+            [data]="item.chart.data"
+            [stackedData]="item.chart.stackedData"
+            [title]="item.chart.config.title"
+            [description]="item.chart.config.description"
+            [showLabels]="true"
+            [limitResults]="item.chart.config.limitResults"
+            [preserveOrder]="!!item.chart.config.timeBucket"
+            [colorMap]="item.chart.colorMap"
+          />
+        }
+      </ccms-card>
+    } @else if (editable()) {
+      <button
+        type="button"
+        class="empty-slot"
+        [class.drop-target]="dropTargetGapInsertIndex() === item.insertIndex"
+        [attr.data-insert-index]="item.insertIndex"
+        (click)="openConfigureChart(item.insertIndex)"
+      >
+        <span class="empty-slot-icon">+</span>
+        <span class="empty-slot-text">Add Chart</span>
+      </button>
+    }
+  }
+  @if (editable() && showFullWidthAdd()) {
+    <button type="button" class="empty-slot empty-slot-full-width" (click)="openConfigureChart()">
+      <span class="empty-slot-icon">+</span>
+      <span class="empty-slot-text">Add Chart</span>
+    </button>
+  }
+</div>
+
+@if (editable()) {
+  <div class="chart-counter">{{ charts().length }}/{{ maxCharts }} charts</div>
+}
+<ccms-popup-outlet />

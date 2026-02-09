@@ -1,0 +1,101 @@
+/* ==========================================================================
+   View Actions Component - BEM Naming
+   ========================================================================== */
+
+.ccms-view-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--ccms-view-actions-font-family, system-ui, -apple-system, sans-serif);
+  font-size: var(--ccms-view-actions-font-size, 14px);
+}
+
+/* Elements
+   ========================================================================== */
+
+.ccms-view-actions__button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--ccms-view-actions-button-padding, 6px 12px);
+  border: 1px solid var(--ccms-view-actions-button-border, #e0e0e0);
+  border-radius: var(--ccms-view-actions-button-radius, 6px);
+  background: var(--ccms-view-actions-button-bg, #fff);
+  color: var(--ccms-view-actions-button-color, #333);
+  font-size: inherit;
+  font-family: inherit;
+  font-weight: var(--ccms-view-actions-button-weight, 500);
+  line-height: 1.2;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    opacity 0.15s ease;
+}
+
+.ccms-view-actions__button:hover {
+  background: var(--ccms-view-actions-button-hover-bg, #f5f5f5);
+  border-color: var(--ccms-view-actions-button-hover-border, #d0d0d0);
+}
+
+.ccms-view-actions__button:focus-visible {
+  outline: 2px solid var(--ccms-view-actions-focus-color, #5b8def);
+  outline-offset: 2px;
+}
+
+.ccms-view-actions__button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.ccms-view-actions__button:disabled:hover {
+  background: var(--ccms-view-actions-button-bg, #fff);
+  border-color: var(--ccms-view-actions-button-border, #e0e0e0);
+}
+
+/* Modifiers
+   ========================================================================== */
+
+.ccms-view-actions__button--primary {
+  background: var(--ccms-view-actions-primary-bg, #1a1a1a);
+  color: var(--ccms-view-actions-primary-color, #fff);
+}
+
+.ccms-view-actions__button--primary:hover {
+  background: var(--ccms-view-actions-primary-hover-bg, #333);
+}
+
+.ccms-view-actions__button--primary:disabled {
+  background: var(--ccms-view-actions-primary-bg, #1a1a1a);
+}
+
+.ccms-view-actions__button--primary:disabled:hover {
+  background: var(--ccms-view-actions-primary-bg, #1a1a1a);
+}
+
+/* Skeleton loading state
+   ========================================================================== */
+
+.ccms-view-actions__skeleton {
+  width: 100px;
+  height: 34px;
+  border-radius: var(--ccms-view-actions-button-radius, 6px);
+  background: linear-gradient(
+    90deg,
+    var(--ccms-view-actions-skeleton-color, #e8e8e8) 25%,
+    var(--ccms-view-actions-skeleton-highlight, #f4f4f4) 50%,
+    var(--ccms-view-actions-skeleton-color, #e8e8e8) 75%
+  );
+  background-size: 200% 100%;
+  animation: ccms-view-actions-skeleton-shimmer 1.5s infinite;
+}
+
+@keyframes ccms-view-actions-skeleton-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}

@@ -1,0 +1,53 @@
+/*
+ * Note: :host { display: inline-block } was removed because it caused
+ * table horizontal scroll issues in content-report when combined with
+ * ShadowDom encapsulation and ViewEncapsulation.None on this component.
+ * The button renders correctly without explicit host styling.
+ */
+
+.add-filter-button__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1.2;
+  color: #333;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.add-filter-button__trigger:hover:not(:disabled) {
+  background-color: #f5f5f5;
+  border-color: #d0d0d0;
+}
+
+.add-filter-button__trigger:focus {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
+.add-filter-button__trigger:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.add-filter-button__trigger[aria-expanded='true'] {
+  background-color: #f0f0f0;
+  border-color: #c0c0c0;
+}
+
+.add-filter-button__icon {
+  font-size: 14px;
+  font-weight: 600;
+  color: #666;
+}
+
+.add-filter-button__text {
+  font-weight: 500;
+}

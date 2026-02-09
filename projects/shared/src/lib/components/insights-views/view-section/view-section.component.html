@@ -1,0 +1,21 @@
+@if (showViewSection()) {
+  <div class="ccms-view-section">
+    <ccms-view-menu
+      [items]="viewDescriptions()"
+      [loading]="loading()"
+      [selected]="selectedViewDescription()"
+      (viewChanged)="onViewChange($event)"
+      (editView)="onEditView($event)"
+    />
+    <ccms-view-actions
+      [view]="currentViewService.view()"
+      [dirty]="currentViewService.dirty()"
+      [editable]="viewEditable()"
+      [showCreateButton]="allowUserViews()"
+      [loading]="loading()"
+      (updateView)="onUpdateView()"
+      (createView)="onCreateView()"
+    />
+  </div>
+  <ccms-popup-outlet />
+}

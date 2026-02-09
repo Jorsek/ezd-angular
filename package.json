@@ -1,0 +1,79 @@
+{
+  "name": "ccms-components-angular",
+  "version": "0.0.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve elements",
+    "build": "npm run build:all",
+    "watch": "ng build shared && concurrently \"ng build shared --watch\" \"sleep 2 && ng serve elements\"",
+    "test": "ng test shared && ng test elements",
+    "test:ci": "npx playwright install chromium && ng test shared --watch=false --coverage && ng test elements --watch=false --coverage",
+    "lint": "ng lint",
+    "format": "prettier --write \"projects/**/*.{ts,html,css}\"",
+    "format:check": "prettier --check \"projects/**/*.{ts,html,css}\"",
+    "storybook": "ng run shared:storybook",
+    "build:shared": "ng build shared --configuration production",
+    "build:elements": "ng build elements --configuration production",
+    "build:storybook": "ng run shared:build-storybook",
+    "build:all": "npm run build:shared && npm run build:elements && npm run build:storybook",
+    "gen:openapi": "curl -s http://localhost:8081/v3/api-docs.yaml -o /tmp/openapi.yaml && sed -i '' 's|http://localhost:8081||g' /tmp/openapi.yaml && npx @openapitools/openapi-generator-cli generate -i /tmp/openapi.yaml -g typescript-angular -o projects/shared/src/lib/api --additional-properties=ngVersion=21.0.0,providedInRoot=true,fileNaming=kebab-case"
+  },
+  "prettier": {
+    "printWidth": 100,
+    "singleQuote": true,
+    "overrides": [
+      {
+        "files": "*.html",
+        "options": {
+          "parser": "angular"
+        }
+      }
+    ]
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/cdk": "^21.1.0",
+    "@angular/common": "21.0.6",
+    "@angular/compiler": "21.0.6",
+    "@angular/core": "21.0.6",
+    "@angular/elements": "21.0.6",
+    "@angular/forms": "^21.0.6",
+    "@angular/platform-browser": "21.0.6",
+    "@angular/router": "21.0.6",
+    "echarts": "^6.0.0",
+    "ngx-echarts": "^21.0.0",
+    "ngx-infinite-scroll": "^21.0.0",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0"
+  },
+  "devDependencies": {
+    "@angular-devkit/architect": "^0.2100.4",
+    "@angular-devkit/build-angular": "21.0.4",
+    "@angular/build": "^21.0.4",
+    "@angular/cli": "21.0.4",
+    "@angular/compiler-cli": "21.0.6",
+    "@storybook/addon-docs": "^10.1.10",
+    "@storybook/angular": "^10.1.10",
+    "@storybook/builder-webpack5": "^10.1.10",
+    "@vitest/browser-playwright": "^4.0.16",
+    "@vitest/coverage-v8": "^4.0.16",
+    "@vitest/ui": "^4.0.16",
+    "angular-eslint": "21.1.0",
+    "axe-core": "^4.11.0",
+    "concurrently": "^9.1.0",
+    "eslint": "^9.39.0",
+    "http-proxy-middleware": "^3.0.5",
+    "jsdom": "^27.4.0",
+    "ng-packagr": "^21.0.1",
+    "playwright": "^1.57.0",
+    "prettier": "^3.7.4",
+    "storybook": "^10.1.10",
+    "typescript": "~5.9.2",
+    "typescript-eslint": "8.46.3",
+    "vitest": "^4.0.16",
+    "vitest-axe": "^0.1.0",
+    "webpack": "^5.103.0",
+    "webpack-dev-server": "^4.15.2",
+    "zone.js": "^0.15.1"
+  }
+}

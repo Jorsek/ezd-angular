@@ -1,0 +1,59 @@
+<div class="insights-container">
+  @if (showLocalizationReport()) {
+    <div class="tab-bar" role="tablist" aria-label="Insights tabs">
+      <button
+        type="button"
+        role="tab"
+        [attr.aria-selected]="activeTab() === 'content-report'"
+        [attr.aria-controls]="'panel-content-report'"
+        [class.active]="activeTab() === 'content-report'"
+        (click)="onTabChange('content-report')"
+        (keydown.enter)="onTabChange('content-report')"
+        (keydown.space)="onTabChange('content-report'); $event.preventDefault()"
+      >
+        Content Report
+      </button>
+      <button
+        type="button"
+        role="tab"
+        [attr.aria-selected]="activeTab() === 'localization-report'"
+        [attr.aria-controls]="'panel-localization-report'"
+        [class.active]="activeTab() === 'localization-report'"
+        (click)="onTabChange('localization-report')"
+        (keydown.enter)="onTabChange('localization-report')"
+        (keydown.space)="onTabChange('localization-report'); $event.preventDefault()"
+      >
+        Localization Report
+      </button>
+    </div>
+  }
+
+  <div class="tab-content">
+    @if (activeTab() === 'content-report') {
+      <div
+        id="panel-content-report"
+        role="tabpanel"
+        aria-labelledby="tab-content-report"
+        class="tab-panel content-panel"
+      >
+        <ccms-content-report [contextUuid]="contextUuid()" [contextType]="contextType()" />
+      </div>
+    }
+
+    @if (showLocalizationReport() && activeTab() === 'localization-report') {
+      <div
+        id="panel-localization-report"
+        role="tabpanel"
+        aria-labelledby="tab-localization-report"
+        class="tab-panel localization-panel"
+      >
+        <ccms-localization-insights
+          [contextUuid]="contextUuid()"
+          [contextType]="contextType()"
+          [showHeader]="false"
+          [showBorder]="false"
+        />
+      </div>
+    }
+  </div>
+</div>

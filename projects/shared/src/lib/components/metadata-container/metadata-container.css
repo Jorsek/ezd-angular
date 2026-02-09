@@ -1,0 +1,100 @@
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.metadata-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  padding: 16px 16px 60px;
+  box-sizing: border-box;
+  background-color: var(--background-color, #fff);
+}
+
+.tab-bar {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--border-color, #e0e0e0);
+  padding: 0 16px;
+  flex-shrink: 0;
+}
+
+.tab-bar button {
+  padding: 12px 24px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-secondary, #666);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease;
+  min-height: 44px;
+}
+
+.tab-bar button:hover:not(:disabled) {
+  color: var(--text-primary, #333);
+  background-color: var(--hover-background, rgba(0, 0, 0, 0.04));
+}
+
+.tab-bar button:focus-visible {
+  outline: 2px solid var(--focus-color, #1976d2);
+  outline-offset: -2px;
+}
+
+.tab-bar button.active {
+  color: var(--primary-color, #1976d2);
+  border-bottom-color: var(--primary-color, #1976d2);
+}
+
+.tab-bar button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.tab-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+  border: 1px solid #d6d6d6;
+  border-top: 0;
+  border-radius: 2px;
+}
+
+.tab-panel {
+  flex: 1;
+  overflow: auto;
+}
+
+.tab-panel.hidden {
+  display: none;
+}
+
+/* GWT panel needs position:relative for DockLayoutPanel's absolute children */
+.gwt-panel {
+  overflow: hidden;
+  position: relative;
+}
+
+.bridge-unavailable {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--text-secondary, #666);
+  text-align: center;
+  padding: 24px;
+}
+
+.bridge-unavailable p {
+  margin: 4px 0;
+}

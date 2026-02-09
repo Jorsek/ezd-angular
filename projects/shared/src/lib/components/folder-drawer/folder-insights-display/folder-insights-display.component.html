@@ -1,0 +1,17 @@
+<div class="insights-container">
+  <ccms-callout-section [callouts]="callouts()" [items]="calloutItems()" />
+
+  <!-- Content Type Breakdown -->
+  @if (contentTypeBreakdown().length > 0) {
+    <section class="breakdown-section">
+      <dl class="breakdown-list">
+        @for (item of contentTypeBreakdown(); track item.name) {
+          <div class="breakdown-item">
+            <dt class="breakdown-label">{{ item.name }}</dt>
+            <dd class="breakdown-value">{{ item.count }}</dd>
+          </div>
+        }
+      </dl>
+    </section>
+  }
+</div>

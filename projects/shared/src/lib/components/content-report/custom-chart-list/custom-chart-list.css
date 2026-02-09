@@ -1,0 +1,346 @@
+:host {
+  display: block;
+}
+
+.charts {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+/* Responsive grid adjustments */
+@media (max-width: 1200px) {
+  .charts {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  /* Clamp 4-column charts to 3 */
+  .chart-card-width-4 {
+    grid-column: span 3;
+  }
+}
+
+@media (max-width: 900px) {
+  .charts {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  /* Clamp wider charts to 2 */
+  .chart-card-width-3,
+  .chart-card-width-4 {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 600px) {
+  .charts {
+    grid-template-columns: 1fr;
+  }
+  /* All charts single column on mobile */
+  .chart-card-width-2,
+  .chart-card-width-3,
+  .chart-card-width-4 {
+    grid-column: span 1;
+  }
+}
+
+/* Chart card container */
+.chart-card {
+  position: relative;
+  grid-column: span 1; /* Default */
+  min-width: 0; /* Allow grid item to shrink below content size */
+  overflow: hidden;
+}
+
+/* Chart width spanning */
+.chart-card-width-1 {
+  grid-column: span 1;
+}
+
+.chart-card-width-2 {
+  grid-column: span 2;
+}
+
+.chart-card-width-3 {
+  grid-column: span 3;
+}
+
+.chart-card-width-4 {
+  grid-column: span 4;
+}
+
+/* Chart height (row) spanning */
+.chart-card-height-1 {
+  grid-row: span 1;
+}
+
+.chart-card-height-2 {
+  grid-row: span 2;
+}
+
+.chart-title {
+  text-align: center;
+}
+
+/* Fixed chart height regardless of width - maintains consistent height across all widths */
+/* ::ng-deep pierces encapsulation to override the chart component's :host styles */
+:host ::ng-deep .chart-card ccms-bar-chart,
+:host ::ng-deep .chart-card ccms-pie-chart {
+  height: 250px;
+  aspect-ratio: unset;
+  min-height: unset;
+}
+
+/* Taller height for 2-row charts (250px * 2 + 16px gap) */
+:host ::ng-deep .chart-card-height-2 ccms-bar-chart,
+:host ::ng-deep .chart-card-height-2 ccms-pie-chart {
+  height: 516px;
+}
+
+/* Chart actions container */
+.chart-actions {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  gap: 4px;
+  z-index: 1;
+}
+
+/* Action buttons (configure, delete) */
+.chart-action-btn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.04);
+  border: none;
+  border-radius: 6px;
+  padding: 0;
+}
+
+.chart-card:hover .chart-action-btn,
+.chart-card:focus-within .chart-action-btn {
+  opacity: 0.7;
+  background-color: rgba(0, 0, 0, 0.08);
+}
+
+.chart-action-btn:focus {
+  opacity: 1;
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+.chart-action-btn:hover {
+  opacity: 1 !important;
+  background-color: rgba(59, 130, 246, 0.15) !important;
+  color: #3b82f6;
+}
+
+/* Danger variant for delete button */
+.chart-action-btn-danger:hover {
+  background-color: rgba(239, 68, 68, 0.15) !important;
+  color: #ef4444;
+}
+
+/* Drag handle */
+.drag-handle {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.4;
+  cursor: grab;
+  transition: all 0.2s ease;
+  color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.04);
+  border-radius: 6px;
+}
+
+.chart-card:hover .drag-handle {
+  opacity: 0.7;
+  background-color: rgba(0, 0, 0, 0.08);
+}
+
+.drag-handle:hover,
+.drag-handle:focus {
+  opacity: 1 !important;
+  background-color: rgba(59, 130, 246, 0.15) !important;
+  color: #3b82f6;
+}
+
+.drag-handle:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Empty slot placeholder */
+.empty-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  border: 2px dashed rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  background-color: transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+.empty-slot:hover {
+  border-color: rgba(0, 0, 0, 0.25);
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+.empty-slot-icon {
+  font-size: 32px;
+  color: rgba(0, 0, 0, 0.55);
+  transition: color 0.3s ease;
+}
+
+.empty-slot:hover .empty-slot-icon {
+  color: rgba(0, 0, 0, 0.4);
+}
+
+.empty-slot-text {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.55);
+  margin-top: 8px;
+  transition: color 0.3s ease;
+}
+
+.empty-slot:hover .empty-slot-text {
+  color: rgba(0, 0, 0, 0.5);
+}
+
+/* Full-width add button variant */
+.empty-slot-full-width {
+  grid-column: 1 / -1;
+  flex-direction: row;
+  gap: 12px;
+  min-height: 80px;
+}
+
+.empty-slot-full-width .empty-slot-icon {
+  font-size: 24px;
+}
+
+.empty-slot-full-width .empty-slot-text {
+  margin-top: 0;
+}
+
+/* CDK drag states */
+
+/* The placeholder where the dragged item came from */
+.cdk-drag-placeholder {
+  background: rgba(59, 130, 246, 0.12);
+  border: 2px dashed rgba(59, 130, 246, 0.5);
+  border-radius: 8px;
+  opacity: 1;
+}
+
+/* The floating preview of the dragged item */
+.cdk-drag-preview {
+  background-color: #fff;
+  border: 2px solid #3b82f6;
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow:
+    0 12px 32px rgba(0, 0, 0, 0.2),
+    0 0 0 4px rgba(59, 130, 246, 0.25);
+  transform: scale(1.03);
+  z-index: 1000;
+}
+
+/* Hide the chart actions in the preview */
+.cdk-drag-preview .chart-actions {
+  opacity: 0;
+}
+
+/* Animation when items settle into place */
+.cdk-drag-animating {
+  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+}
+
+/* Style other chart cards while dragging - these are drop targets */
+.charts.cdk-drop-list-dragging .chart-card:not(.cdk-drag-placeholder) {
+  transition:
+    transform 250ms cubic-bezier(0, 0, 0.2, 1),
+    border-color 200ms ease,
+    box-shadow 200ms ease,
+    background-color 200ms ease;
+  border: 2px solid rgba(59, 130, 246, 0.4);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+  background-color: rgba(59, 130, 246, 0.03);
+  cursor: pointer;
+}
+
+/* Hover effect on drop targets while dragging */
+.charts.cdk-drop-list-dragging .chart-card:not(.cdk-drag-placeholder):hover {
+  border-color: #3b82f6;
+  box-shadow:
+    0 0 0 4px rgba(59, 130, 246, 0.25),
+    0 4px 12px rgba(59, 130, 246, 0.2);
+  background-color: rgba(59, 130, 246, 0.08);
+  transform: scale(1.01);
+}
+
+/* Style gap slots as drop targets while dragging (exclude full-width add button) */
+.charts.cdk-drop-list-dragging .empty-slot:not(.empty-slot-full-width) {
+  border-color: rgba(59, 130, 246, 0.4);
+  background-color: rgba(59, 130, 246, 0.05);
+}
+
+/* Hover/active state for gap drop target */
+.empty-slot.drop-target,
+.charts.cdk-drop-list-dragging .empty-slot:not(.empty-slot-full-width):hover {
+  border-color: #3b82f6;
+  background-color: rgba(59, 130, 246, 0.12);
+  border-style: solid;
+}
+
+/* Hide full-width add button while dragging */
+.charts.cdk-drop-list-dragging .empty-slot-full-width {
+  opacity: 0.3;
+  pointer-events: none;
+}
+
+/* Drop indicator bar showing insertion point */
+.chart-card.drop-indicator-before::before,
+.chart-card.drop-indicator-after::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background-color: #3b82f6;
+  border-radius: 2px;
+  z-index: 10;
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
+}
+
+.chart-card.drop-indicator-before::before {
+  left: -10px;
+}
+
+.chart-card.drop-indicator-after::after {
+  right: -10px;
+}
+
+/* Chart counter badge */
+.chart-counter {
+  display: inline-block;
+  padding: 4px 10px;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.04);
+  border-radius: 12px;
+  margin-top: -12px;
+}
