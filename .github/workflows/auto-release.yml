@@ -61,18 +61,15 @@ jobs:
         id: ai-summary
         continue-on-error: true
         env:
+          # Uses MODELS_TOKEN secret if set, otherwise falls back to GITHUB_TOKEN.
+          # To enable: create a PAT with 'models' scope and add as MODELS_TOKEN repo secret.
+          # Or enable GitHub Models for your org to use the default GITHUB_TOKEN.
+          AI_TOKEN: ${{ secrets.MODELS_TOKEN || github.token }}
           GH_TOKEN: ${{ github.token }}
         run: |
           # Find previous dated release tag (exclude 'latest')
           PREV_TAG=$(git tag -l 'v[0-9]*' --sort=-v:refname | head -2 | tail -1)
           echo "Previous release tag: ${PREV_TAG:-none}"
-
-          # Collect commits since last release
-          if [ -n "$PREV_TAG" ]; then
-            COMMITS=$(git log --oneline "$PREV_TAG"..HEAD 2>/dev/null || echo "")
-          else
-            COMMITS=$(git log --oneline -20 2>/dev/null || echo "")
-          fi
 
           # Get merged PRs
           PR_DATA=$(gh pr list --state merged --base main --limit 20 \
@@ -80,13 +77,18 @@ jobs:
             --jq '.[] | "PR #\(.number): \(.title)\n\(.body // "No description")\n---"' 2>/dev/null || echo "")
 
           if [ -z "$PR_DATA" ]; then
-            PR_DATA="Commits since last release:\n$COMMITS"
+            # Fall back to commit log
+            if [ -n "$PREV_TAG" ]; then
+              PR_DATA=$(git log --oneline "$PREV_TAG"..HEAD 2>/dev/null || echo "No changes found")
+            else
+              PR_DATA=$(git log --oneline -20 2>/dev/null || echo "No changes found")
+            fi
           fi
 
           # Write PR data to temp file to avoid shell escaping issues
           echo "$PR_DATA" > /tmp/pr-data.txt
           echo "PR data collected:"
-          cat /tmp/pr-data.txt | head -30
+          head -30 /tmp/pr-data.txt
 
           # Call GitHub Models API to generate summary
           node -e "
@@ -108,7 +110,7 @@ jobs:
                   method: 'POST',
                   headers: {
                     'Accept': 'application/vnd.github+json',
-                    'Authorization': 'Bearer ' + process.env.GH_TOKEN,
+                    'Authorization': 'Bearer ' + process.env.AI_TOKEN,
                     'Content-Type': 'application/json',
                     'X-GitHub-Api-Version': '2022-11-28'
                   },
@@ -116,7 +118,10 @@ jobs:
                 });
                 const text = await res.text();
                 console.error('API status:', res.status);
-                console.error('API response:', text.slice(0, 500));
+                if (res.status !== 200) {
+                  console.error('API error:', text.slice(0, 300));
+                  process.exit(1);
+                }
                 const data = JSON.parse(text);
                 if (data.choices && data.choices[0]) {
                   fs.writeFileSync('/tmp/ai-summary.txt', data.choices[0].message.content);
@@ -137,12 +142,11 @@ jobs:
             cat /tmp/ai-summary.txt
             echo "has_summary=true" >> $GITHUB_OUTPUT
           else
-            echo "AI summary failed, falling back to auto-generated notes"
+            echo "AI summary not available, using standard release notes"
             echo "has_summary=false" >> $GITHUB_OUTPUT
           fi
 
       - name: Build release body
-        id: release-body
         run: |
           if [ "${{ steps.ai-summary.outputs.has_summary }}" == "true" ]; then
             {
@@ -154,7 +158,7 @@ jobs:
               echo "*Release notes generated with AI via GitHub Models*"
             } > /tmp/release-body.txt
           else
-            echo "Auto-release from main branch." > /tmp/release-body.txt
+            echo "" > /tmp/release-body.txt
           fi
 
       - name: Create dated release
@@ -168,24 +172,27 @@ jobs:
           files: ezd-angular-${{ steps.version.outputs.version }}.tar.gz
 
       - name: Update latest release
-        run: |
-          # Copy artifact with "latest" name
-          cp ezd-angular-${{ steps.version.outputs.version }}.tar.gz ezd-angular-latest.tar.gz
-
-          # Read the release body
-          BODY=$(cat /tmp/release-body.txt 2>/dev/null || echo "Latest build from main")
-
-          # Delete existing latest release if it exists
-          gh release delete latest --yes 2>/dev/null || true
-          git push --delete origin latest 2>/dev/null || true
-
-          # Create new latest release pointing to same commit
-          gh release create latest \
-            --title "latest" \
-            --notes "Latest build from main (currently ${{ steps.version.outputs.tag }})
-
-          $BODY" \
-            --target ${{ github.sha }} \
-            ezd-angular-latest.tar.gz
         env:
           GH_TOKEN: ${{ github.token }}
+        run: |
+          cp ezd-angular-${{ steps.version.outputs.version }}.tar.gz ezd-angular-latest.tar.gz
+
+          # Retry loop for GitHub API flakiness
+          for i in 1 2 3; do
+            gh release delete latest --yes 2>/dev/null || true
+            git push --delete origin latest 2>/dev/null || true
+            sleep 2
+
+            if gh release create latest \
+              --title "latest" \
+              --notes "Latest build from main (currently ${{ steps.version.outputs.tag }})" \
+              --target ${{ github.sha }} \
+              ezd-angular-latest.tar.gz; then
+              echo "Latest release updated successfully"
+              exit 0
+            fi
+            echo "Attempt $i failed, retrying in 10s..."
+            sleep 10
+          done
+          echo "Warning: Could not update latest release after 3 attempts"
+          exit 1
