@@ -103,19 +103,36 @@ jobs:
         run: |
           node -e "
             const fs = require('fs');
-            const output = fs.readFileSync('/tmp/test-output.txt', 'utf8');
+            const raw = fs.readFileSync('/tmp/test-output.txt', 'utf8');
             const summary = process.env.GITHUB_STEP_SUMMARY;
             const outcome = '${{ steps.test.outcome }}';
 
-            // Parse test counts: 'Tests  X passed | Y failed' or 'Test Files  X passed'
-            const passed = [...output.matchAll(/(\d+)\s+passed/g)].reduce((s, m) => s + Number(m[1]), 0);
-            const failed = [...output.matchAll(/(\d+)\s+failed/g)].reduce((s, m) => s + Number(m[1]), 0);
+            // Strip ANSI escape codes for reliable parsing
+            const output = raw.replace(/\x1b\[[0-9;]*m/g, '');
+
+            // Match Vitest summary lines: 'Tests  591 passed (591)' or 'Tests  3 failed | 588 passed (591)'
+            // Only match 'Tests' lines (not 'Test Files') and take the last occurrence
+            const testLines = output.match(/Tests\s+.*(?:passed|failed).*/g) || [];
+            const lastLine = testLines[testLines.length - 1] || '';
+
+            const passedMatch = lastLine.match(/(\d+)\s+passed/);
+            const failedMatch = lastLine.match(/(\d+)\s+failed/);
+            const passed = passedMatch ? Number(passedMatch[1]) : 0;
+            const failed = failedMatch ? Number(failedMatch[1]) : 0;
             const total = passed + failed;
 
+            // Also get test file counts
+            const fileLines = output.match(/Test Files\s+.*(?:passed|failed).*/g) || [];
+            const lastFileLine = fileLines[fileLines.length - 1] || '';
+            const filesPassedMatch = lastFileLine.match(/(\d+)\s+passed/);
+            const filesFailedMatch = lastFileLine.match(/(\d+)\s+failed/);
+            const filesPassed = filesPassedMatch ? Number(filesPassedMatch[1]) : 0;
+            const filesFailed = filesFailedMatch ? Number(filesFailedMatch[1]) : 0;
+
             if (outcome === 'success') {
-              fs.appendFileSync(summary, '## ✅ Tests Passed — ' + passed + ' passed\n\n');
+              fs.appendFileSync(summary, '## ✅ Tests Passed — ' + passed + ' tests across ' + filesPassed + ' files\n\n');
             } else {
-              fs.appendFileSync(summary, '## ❌ Tests Failed — ' + failed + ' of ' + total + ' failed\n\n');
+              fs.appendFileSync(summary, '## ❌ Tests Failed — ' + failed + ' of ' + total + ' tests failed (' + filesFailed + ' files)\n\n');
 
               // Extract failed test names
               const failLines = output.match(/FAIL .+/g) || [];
