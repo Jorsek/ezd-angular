@@ -104,11 +104,13 @@ jobs:
 
             (async () => {
               try {
-                const res = await fetch('https://models.inference.ai.azure.com/chat/completions', {
+                const res = await fetch('https://models.github.ai/inference/chat/completions', {
                   method: 'POST',
                   headers: {
+                    'Accept': 'application/vnd.github+json',
                     'Authorization': 'Bearer ' + process.env.GH_TOKEN,
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
+                    'X-GitHub-Api-Version': '2022-11-28'
                   },
                   body: JSON.stringify(payload)
                 });
