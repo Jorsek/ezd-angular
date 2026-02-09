@@ -141,3 +141,6 @@ export { InsightsContainerComponent } from './lib/components/insights-container/
 
 // API
 export { provideApi } from './lib/api/provide-api';
+
+// Version
+export { VERSION } from './lib/version';

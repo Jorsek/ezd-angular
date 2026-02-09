@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Release version (e.g. 1.0.0)'
+        description: 'Release version (e.g. 2025.02.09.1)'
         required: true
         type: string
 
@@ -39,6 +39,9 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "tag=v$VERSION" >> $GITHUB_OUTPUT
           echo "## Release v$VERSION" >> $GITHUB_STEP_SUMMARY
+
+      - name: Stamp version
+        run: echo "export const VERSION = '${{ steps.version.outputs.version }}';" > projects/shared/src/lib/version.ts
 
       - name: Build shared library
         run: npm run build:shared

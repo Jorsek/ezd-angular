@@ -36,7 +36,7 @@ No Java code changes required. Replace the inline Angular build with a Maven dow
 
 Every merge to `main` in ezd-angular automatically creates:
 
-1. **A dated release** (e.g., `v2025-02-09-1`, `v2025-02-09-2`) — permanent, immutable
+1. **A dated release** (e.g., `v2025.02.09.1`, `v2025.02.09.2`) — permanent, immutable
 2. **A `latest` release** — always points to the most recent build on main
 
 You can also create manual releases by pushing a tag (`git tag v1.0.0 && git push --tags`).
@@ -50,7 +50,7 @@ GitHub release assets have direct download URLs that Maven can fetch without any
 https://github.com/Jorsek/ezd-angular/releases/latest/download/ezd-angular-latest.tar.gz
 
 # Specific version
-https://github.com/Jorsek/ezd-angular/releases/download/v2025-02-09-1/ezd-angular-2025-02-09-1.tar.gz
+https://github.com/Jorsek/ezd-angular/releases/download/v2025.02.09.1/ezd-angular-2025.02.09.1.tar.gz
 ```
 
 ## Maven Integration (Local + CI Builds)
@@ -71,7 +71,7 @@ On a **release branch**, override to pin a specific version:
 
 ```xml
 <properties>
-  <ezd.angular.version>2025-02-09-1</ezd.angular.version>
+  <ezd.angular.version>2025.02.09.1</ezd.angular.version>
   <ezd.angular.url>https://github.com/Jorsek/ezd-angular/releases/download/v${ezd.angular.version}/ezd-angular-${ezd.angular.version}.tar.gz</ezd.angular.url>
 </properties>
 ```
@@ -160,18 +160,18 @@ If you prefer to keep the download in the workflow YAML rather than Maven (e.g.,
 ## Typical Workflow
 
 ```
-ezd-angular main ──▸ auto-releases: v2025-02-09-1, v2025-02-09-2, v2025-02-10-1, ...
+ezd-angular main ──▸ auto-releases: v2025.02.09.1, v2025.02.09.2, v2025.02.10.1, ...
                        └── "latest" always points to newest
 
 ezd integration branch ──▸ Maven downloads "latest" on every build
-ezd release branch     ──▸ Maven downloads pinned version (e.g., "2025-02-09-2")
+ezd release branch     ──▸ Maven downloads pinned version (e.g., "2025.02.09.2")
 ```
 
 1. Develop Angular components, merge PRs to ezd-angular main
 2. Each merge auto-creates a dated release + updates `latest`
 3. Integration branch in ezd automatically picks up every new build via Maven
-4. When ready to cut a release, note the current version (e.g., `v2025-02-10-1`)
-5. Set `ezd.angular.version` property to `2025-02-10-1` on the ezd release branch
+4. When ready to cut a release, note the current version (e.g., `v2025.02.10.1`)
+5. Set `ezd.angular.version` property to `2025.02.10.1` on the ezd release branch
 6. That version is locked for the release — no surprises from newer Angular changes
 
 ### Bumping the Pinned Version

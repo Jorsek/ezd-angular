@@ -26,14 +26,17 @@ jobs:
       - name: Determine version
         id: version
         run: |
-          DATE=$(date -u +%Y-%m-%d)
+          DATE=$(date -u +%Y.%m.%d)
           # Count existing tags for today to determine sequence number
-          EXISTING=$(git tag -l "v${DATE}-*" | wc -l | tr -d ' ')
+          EXISTING=$(git tag -l "v${DATE}.*" | wc -l | tr -d ' ')
           SEQ=$((EXISTING + 1))
-          VERSION="${DATE}-${SEQ}"
+          VERSION="${DATE}.${SEQ}"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
           echo "tag=v$VERSION" >> $GITHUB_OUTPUT
           echo "## Auto Release v$VERSION" >> $GITHUB_STEP_SUMMARY
+
+      - name: Stamp version
+        run: echo "export const VERSION = '${{ steps.version.outputs.version }}';" > projects/shared/src/lib/version.ts
 
       - name: Build shared library
         run: npm run build:shared
