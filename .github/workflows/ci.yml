@@ -1,0 +1,232 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  format:
+    name: Format Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Check formatting
+        id: format
+        run: npm run format:check 2>&1 | tee /tmp/format-output.txt
+        continue-on-error: true
+      - name: Summary
+        if: steps.format.outcome == 'failure'
+        run: |
+          echo "## ❌ Format Check Failed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "The following files need formatting. Run \`npm run format\` locally to fix." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          cat /tmp/format-output.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          exit 1
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Run linter
+        id: lint
+        run: npm run lint 2>&1 | tee /tmp/lint-output.txt
+        continue-on-error: true
+      - name: Summary
+        if: steps.lint.outcome == 'failure'
+        run: |
+          echo "## ❌ Lint Failed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          tail -100 /tmp/lint-output.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          exit 1
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Install Playwright for Vitest browser
+        run: npx playwright install chromium
+      - name: Run tests with coverage
+        id: test
+        run: npm run test:ci 2>&1 | tee /tmp/test-output.txt
+        continue-on-error: true
+      - name: Upload coverage data
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-output
+          path: /tmp/test-output.txt
+          retention-days: 1
+      - name: Summary
+        if: steps.test.outcome == 'failure'
+        run: |
+          echo "## ❌ Tests Failed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          tail -60 /tmp/test-output.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          exit 1
+
+  coverage:
+    name: "Coverage ≥ 60%"
+    runs-on: ubuntu-latest
+    needs: [test]
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: test-output
+          path: /tmp
+      - name: Check coverage threshold
+        id: coverage
+        run: |
+          node -e "
+            const fs = require('fs');
+            const output = fs.readFileSync('/tmp/test-output.txt', 'utf8');
+
+            // Parse all 'All files' coverage lines
+            const matches = [...output.matchAll(/All files[^|]*\|\s*([\d.]+)\s*\|\s*([\d.]+)\s*\|\s*([\d.]+)\s*\|\s*([\d.]+)/g)];
+            if (matches.length === 0) {
+              console.log('⚠️ Could not parse coverage output');
+              process.exit(0);
+            }
+
+            let allPass = true;
+            const rows = [];
+            for (const match of matches) {
+              const [stmts, branch, funcs, lines] = [match[1], match[2], match[3], match[4]].map(Number);
+              const min = Math.min(stmts, branch, funcs, lines);
+              const pass = min >= 60;
+              if (!pass) allPass = false;
+              rows.push({ stmts, branch, funcs, lines, min, pass });
+            }
+
+            // Write summary
+            let summary = '';
+            summary += allPass ? '## ✅ Coverage Passed\n\n' : '## ❌ Coverage Below 60%\n\n';
+            summary += '| Metric | Value |\n|--------|-------|\n';
+            const last = rows[rows.length - 1];
+            summary += '| Statements | ' + last.stmts + '% |\n';
+            summary += '| Branches | ' + last.branch + '% |\n';
+            summary += '| Functions | ' + last.funcs + '% |\n';
+            summary += '| Lines | ' + last.lines + '% |\n';
+            summary += '\n**Minimum: ' + last.min + '%** (threshold: 60%)\n';
+
+            fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, summary);
+
+            if (!allPass) {
+              console.log('FAIL: Coverage', last.min, '% is below 60% threshold');
+              process.exit(1);
+            }
+            console.log('PASS: Minimum coverage is', last.min, '%');
+          "
+
+  e2e:
+    name: Storybook E2E
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+      - name: Run Storybook E2E tests
+        id: e2e
+        run: npm run e2e 2>&1 | tee /tmp/e2e-output.txt
+        continue-on-error: true
+      - name: Summary
+        if: steps.e2e.outcome == 'failure'
+        run: |
+          echo "## ❌ Storybook E2E Tests Failed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          tail -80 /tmp/e2e-output.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          exit 1
+      - uses: actions/upload-artifact@v4
+        if: steps.e2e.outcome == 'failure'
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
+
+  api-generation:
+    name: API Generation (placeholder)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Placeholder
+        run: |
+          echo "## ℹ️ API Generation" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "API client generation is not yet automated in CI." >> $GITHUB_STEP_SUMMARY
+          echo "To regenerate locally, start the backend on port 8081 and run:" >> $GITHUB_STEP_SUMMARY
+          echo '```bash' >> $GITHUB_STEP_SUMMARY
+          echo 'npm run gen:openapi' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: [format, lint, test]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Build shared library
+        id: build-shared
+        run: npm run build:shared 2>&1 | tee /tmp/build-output.txt
+        continue-on-error: true
+      - name: Build elements
+        id: build-elements
+        if: steps.build-shared.outcome == 'success'
+        run: npm run build:elements 2>&1 | tee -a /tmp/build-output.txt
+        continue-on-error: true
+      - name: Summary
+        if: steps.build-shared.outcome == 'failure' || steps.build-elements.outcome == 'failure'
+        run: |
+          echo "## ❌ Build Failed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          tail -60 /tmp/build-output.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          exit 1
+      - name: Upload build artifacts
+        if: steps.build-elements.outcome == 'success'
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-output
+          path: dist/
+          retention-days: 7

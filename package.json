@@ -1,6 +1,6 @@
 {
-  "name": "ccms-components-angular",
-  "version": "0.0.0",
+  "name": "ezd-angular",
+  "version": "0.1.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve elements",
@@ -16,6 +16,8 @@
     "build:elements": "ng build elements --configuration production",
     "build:storybook": "ng run shared:build-storybook",
     "build:all": "npm run build:shared && npm run build:elements && npm run build:storybook",
+    "e2e": "npx playwright test --config e2e/playwright.config.ts",
+    "e2e:ui": "npx playwright test --config e2e/playwright.config.ts --ui",
     "gen:openapi": "curl -s http://localhost:8081/v3/api-docs.yaml -o /tmp/openapi.yaml && sed -i '' 's|http://localhost:8081||g' /tmp/openapi.yaml && npx @openapitools/openapi-generator-cli generate -i /tmp/openapi.yaml -g typescript-angular -o projects/shared/src/lib/api --additional-properties=ngVersion=21.0.0,providedInRoot=true,fileNaming=kebab-case"
   },
   "prettier": {
@@ -52,6 +54,7 @@
     "@angular/build": "^21.0.4",
     "@angular/cli": "21.0.4",
     "@angular/compiler-cli": "21.0.6",
+    "@playwright/test": "^1.58.2",
     "@storybook/addon-docs": "^10.1.10",
     "@storybook/angular": "^10.1.10",
     "@storybook/builder-webpack5": "^10.1.10",

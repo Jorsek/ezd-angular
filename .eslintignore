@@ -8,3 +8,6 @@ coverage
 
 # Auto-generated OpenAPI client
 projects/shared/src/lib/api
+
+# Playwright E2E tests
+e2e
