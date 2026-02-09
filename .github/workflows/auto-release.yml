@@ -63,19 +63,18 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          # Find the previous release tag
-          PREV_TAG=$(git describe --tags --abbrev=0 HEAD~1 2>/dev/null || echo "")
+          # Find previous dated release tag (exclude 'latest')
+          PREV_TAG=$(git tag -l 'v[0-9]*' --sort=-v:refname | head -2 | tail -1)
+          echo "Previous release tag: ${PREV_TAG:-none}"
 
-          # Collect merged PR info since last release
+          # Collect commits since last release
           if [ -n "$PREV_TAG" ]; then
-            echo "Collecting PRs since $PREV_TAG..."
             COMMITS=$(git log --oneline "$PREV_TAG"..HEAD 2>/dev/null || echo "")
           else
-            echo "No previous tag, collecting recent PRs..."
             COMMITS=$(git log --oneline -20 2>/dev/null || echo "")
           fi
 
-          # Get merged PRs associated with these commits
+          # Get merged PRs
           PR_DATA=$(gh pr list --state merged --base main --limit 20 \
             --json number,title,body \
             --jq '.[] | "PR #\(.number): \(.title)\n\(.body // "No description")\n---"' 2>/dev/null || echo "")
@@ -84,11 +83,13 @@ jobs:
             PR_DATA="Commits since last release:\n$COMMITS"
           fi
 
-          # Write PR data to a temp file to avoid shell escaping issues
+          # Write PR data to temp file to avoid shell escaping issues
           echo "$PR_DATA" > /tmp/pr-data.txt
+          echo "PR data collected:"
+          cat /tmp/pr-data.txt | head -30
 
           # Call GitHub Models API to generate summary
-          RESPONSE=$(node -e "
+          node -e "
             const fs = require('fs');
             const prData = fs.readFileSync('/tmp/pr-data.txt', 'utf8');
 
@@ -101,37 +102,40 @@ jobs:
               max_tokens: 500
             };
 
-            fetch('https://models.inference.ai.azure.com/chat/completions', {
-              method: 'POST',
-              headers: {
-                'Authorization': 'Bearer ' + process.env.GH_TOKEN,
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify(payload)
-            })
-            .then(r => r.json())
-            .then(data => {
-              if (data.choices && data.choices[0]) {
-                console.log(data.choices[0].message.content);
-              } else {
-                console.error('No response from model:', JSON.stringify(data));
+            (async () => {
+              try {
+                const res = await fetch('https://models.inference.ai.azure.com/chat/completions', {
+                  method: 'POST',
+                  headers: {
+                    'Authorization': 'Bearer ' + process.env.GH_TOKEN,
+                    'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify(payload)
+                });
+                const text = await res.text();
+                console.error('API status:', res.status);
+                console.error('API response:', text.slice(0, 500));
+                const data = JSON.parse(text);
+                if (data.choices && data.choices[0]) {
+                  fs.writeFileSync('/tmp/ai-summary.txt', data.choices[0].message.content);
+                  console.log('SUCCESS');
+                } else {
+                  console.error('No choices in response');
+                  process.exit(1);
+                }
+              } catch (err) {
+                console.error('API call failed:', err.message);
                 process.exit(1);
               }
-            })
-            .catch(err => {
-              console.error('API call failed:', err.message);
-              process.exit(1);
-            });
-          " 2>/tmp/ai-error.txt)
+            })();
+          " 2>&1 | tee /tmp/ai-log.txt
 
-          if [ $? -eq 0 ] && [ -n "$RESPONSE" ]; then
+          if grep -q "SUCCESS" /tmp/ai-log.txt && [ -f /tmp/ai-summary.txt ]; then
             echo "AI summary generated successfully"
-            # Save to file to preserve formatting
-            echo "$RESPONSE" > /tmp/ai-summary.txt
+            cat /tmp/ai-summary.txt
             echo "has_summary=true" >> $GITHUB_OUTPUT
           else
             echo "AI summary failed, falling back to auto-generated notes"
-            cat /tmp/ai-error.txt 2>/dev/null || true
             echo "has_summary=false" >> $GITHUB_OUTPUT
           fi
 
