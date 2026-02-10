@@ -1,6 +1,6 @@
 # ezd-angular
 
-Angular component library for embedded components in Heretto CCMS. This project provides reusable UI components designed to be deployed to CDN and integrated into existing CCMS, initially supporting gradual migration from GWT to Angular.
+Angular component library for embedded components in Heretto CCMS. Provides reusable UI components deployed via GitHub Releases and integrated into the existing application, supporting gradual migration from GWT to Angular.
 
 ## Table of Contents
 
